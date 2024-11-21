@@ -20,7 +20,6 @@ variables_types: dict[str, list] = get_variable_types(data)
 numeric: list[str] = variables_types["numeric"]
 print(numeric)
 
-"""
 # Boxplot for all numeric variables
 if [] != numeric:
     plt.figure(figsize=(10, 9))
@@ -221,7 +220,7 @@ if [] != symbolic:
 else:
     print("There are no symbolic variables.")
 
-"""
+    
 target = "LAW_CAT_CD"
 print(data[target].value_counts())
 values: Series = data[target].value_counts()

@@ -18,49 +18,13 @@ data: DataFrame = read_csv(filename, na_values="", index_col=None)
 
 print(data.shape)
 
-# Plot a graph with each of them
-figure(figsize=(4, 2))
-values: dict[str, int] = {"nr records": data.shape[0], "nr variables": data.shape[1]}
-plot_bar_chart(
-    list(values.keys()), list(values.values()), title="Nr of records vs nr variables"
-)
-savefig(f"Images/{file_tag}_records_variables.png")
-#show()
+file_tag = "stroke"
+data: DataFrame = read_csv(filename, index_col="id", na_values="")
+summary5: DataFrame = data.describe(include="all")
+summary5
 
-# Missing Values of each variable
-mv: dict[str, int] = {}
-for var in data.columns:
-    nr: int = data[var].isna().sum()
-    if nr > 0:
-        mv[var] = nr
-
-figure()
-plot_bar_chart(
-    list(mv.keys()),
-    list(mv.values()),
-    title="Nr of missing values per variable",
-    xlabel="variables",
-    ylabel="nr missing values",
-)
-savefig(f"Images/{file_tag}_mv.png")
-#show()
-
-# Show the different Variable Types
-
-variable_types: dict[str, list] = get_variable_types(data)
-print(variable_types)
-counts: dict[str, int] = {}
-for tp in variable_types.keys():
-    counts[tp] = len(variable_types[tp])
-
-figure(figsize=(4, 2))
-plot_bar_chart(
-    list(counts.keys()), list(counts.values()), title="Nr of variables per type"
-)
-savefig(f"Images/{file_tag}_variable_types.png")
-#show()
-
-numeric: list[str] = variable_types["numeric"]
+variables_types: dict[str, list] = get_variable_types(data)
+numeric: list[str] = variables_types["numeric"]
 print(numeric)
 
 # Boxplot for all numeric variables
@@ -236,7 +200,7 @@ else:
 
 
 
-symbolic: list[str] = variable_types["symbolic"] + variable_types["binary"]
+symbolic: list[str] = variables_types["symbolic"] + variables_types["binary"]
 print(symbolic)
 if [] != symbolic:
     rows, cols = define_grid(len(symbolic))

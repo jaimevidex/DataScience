@@ -3,12 +3,13 @@ from pandas import read_csv, DataFrame, Series
 from matplotlib.pyplot import figure, savefig, show
 from dslabs_functions import plot_bar_chart, get_variable_types
 from numpy import ndarray, log
+import numpy as np
 from scipy.stats import norm, expon, lognorm
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.pyplot import savefig, show, subplots
 from dslabs_functions import define_grid, HEIGHT, plot_multibar_chart, set_chart_labels, plot_multiline_chart
-
+import matplotlib.pyplot as plt
 
 # Load the data and print the number of variables and records
 filename = "./Data/class_ny_arrests.csv"
@@ -24,7 +25,7 @@ plot_bar_chart(
     list(values.keys()), list(values.values()), title="Nr of records vs nr variables"
 )
 savefig(f"Images/{file_tag}_records_variables.png")
-show()
+#show()
 
 # Missing Values of each variable
 mv: dict[str, int] = {}
@@ -42,7 +43,7 @@ plot_bar_chart(
     ylabel="nr missing values",
 )
 savefig(f"Images/{file_tag}_mv.png")
-show()
+#show()
 
 # Show the different Variable Types
 
@@ -57,19 +58,20 @@ plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
 savefig(f"Images/{file_tag}_variable_types.png")
-show()
+#show()
 
 numeric: list[str] = variable_types["numeric"]
 print(numeric)
 
 # Boxplot for all numeric variables
-
-#if [] != numeric:
-    #data[numeric].boxplot(rot=45)
-    #savefig(f"images/{file_tag}_global_boxplot.png")
-    #show()
-#else:
-    #print("There are no numeric variables.")
+if [] != numeric:
+    plt.figure(figsize=(10, 9))
+    data[numeric].boxplot(rot=45)
+    plt.ylim(-100, 1000)  # Set the y-axis limits as needed
+    plt.savefig(f"Images/{file_tag}_global_boxplot.png")
+    #plt.show()
+else:
+    print("There are no numeric variables.")
 
 # Boxplot for each numeric variable
 print("Boxplots")
@@ -88,7 +90,7 @@ if [] != numeric:
         axs[i, j].boxplot(data[numeric[n]].dropna().values)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     savefig(f"Images/{file_tag}_single_boxplots.png")
-    show()
+    #show()
 else:
     print("There are no numeric variables.")
 
@@ -159,7 +161,7 @@ if [] != numeric:
         percentage=False,
     )
     savefig(f"Images/{file_tag}_outliers_standard.png")
-    show()
+    #show()
 else:
     print("There are no numeric variables.")
 
@@ -182,7 +184,7 @@ if [] != numeric:
         axs[i, j].hist(data[numeric[n]].dropna().values, "auto")
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     savefig(f"Images/{file_tag}_single_histograms_numeric.png")
-    show()
+    #show()
 else:
     print("There are no numeric variables.")
 
@@ -227,8 +229,8 @@ if [] != numeric:
     for n in range(len(numeric)):
         histogram_with_distributions(axs[i, j], data[numeric[n]].dropna(), numeric[n])
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"images/{file_tag}_histogram_numeric_distribution.png")
-    show()
+    savefig(f"Images/{file_tag}_histogram_numeric_distribution.png")
+    #show()
 else:
     print("There are no numeric variables.")
 
@@ -255,7 +257,7 @@ if [] != symbolic:
         )
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     savefig(f"Images/{file_tag}_histograms_symbolic.png")
-    show()
+    #show()
 else:
     print("There are no symbolic variables.")
 

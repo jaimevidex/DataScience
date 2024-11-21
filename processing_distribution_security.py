@@ -16,13 +16,6 @@ filename = "./Data/class_ny_arrests.csv"
 file_tag = "class_ny_arrests"
 data: DataFrame = read_csv(filename, na_values="", index_col=None)
 
-print(data.shape)
-
-file_tag = "stroke"
-data: DataFrame = read_csv(filename, index_col="id", na_values="")
-summary5: DataFrame = data.describe(include="all")
-summary5
-
 variables_types: dict[str, list] = get_variable_types(data)
 numeric: list[str] = variables_types["numeric"]
 print(numeric)
@@ -175,6 +168,7 @@ def histogram_with_distributions(ax: Axes, series: Series, var: str):
     values: list = series.sort_values().to_list()
     ax.hist(values, 20, density=True)
     distributions: dict = compute_known_distributions(values)
+    print(distributions)
     plot_multiline_chart(
         values,
         distributions,
@@ -194,7 +188,7 @@ if [] != numeric:
         histogram_with_distributions(axs[i, j], data[numeric[n]].dropna(), numeric[n])
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     savefig(f"Images/{file_tag}_histogram_numeric_distribution.png")
-    #show()
+    show()
 else:
     print("There are no numeric variables.")
 

@@ -19,7 +19,7 @@ data: DataFrame = read_csv(filename, na_values="", index_col=None)
 print(data.shape)
 
 # Plot a graph with each of them
-figure(figsize=(4, 2))
+figure(figsize=(4, 5))
 values: dict[str, int] = {"nr records": data.shape[0], "nr variables": data.shape[1]}
 plot_bar_chart(
     list(values.keys()), list(values.values()), title="Nr of records vs nr variables"
@@ -34,7 +34,7 @@ for var in data.columns:
     if nr > 0:
         mv[var] = nr
 
-figure()
+figure(figsize=(4, 6))
 plot_bar_chart(
     list(mv.keys()),
     list(mv.values()),
@@ -53,10 +53,10 @@ counts: dict[str, int] = {}
 for tp in variable_types.keys():
     counts[tp] = len(variable_types[tp])
 
-figure(figsize=(4, 2))
+figure(figsize=(4, 5))
 plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
 savefig(f"Images/{file_tag}_variable_types.png")
-show()
+#show()
 

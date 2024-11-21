@@ -20,6 +20,7 @@ variables_types: dict[str, list] = get_variable_types(data)
 numeric: list[str] = variables_types["numeric"]
 print(numeric)
 
+"""
 # Boxplot for all numeric variables
 if [] != numeric:
     plt.figure(figsize=(10, 9))
@@ -176,6 +177,7 @@ def histogram_with_distributions(ax: Axes, series: Series, var: str):
         title="Best fit for %s" % var,
         xlabel=var,
         ylabel="",
+        remove_xticks=True,
     )
 
 print("Histograms with distributions")
@@ -219,8 +221,8 @@ if [] != symbolic:
 else:
     print("There are no symbolic variables.")
 
-
-target = "stroke"
+"""
+target = "LAW_CAT_CD"
 print(data[target].value_counts())
 values: Series = data[target].value_counts()
 print(values)

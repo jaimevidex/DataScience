@@ -34,7 +34,7 @@ else:
     print("Sparsity class: there are no variables.")
 """
 
-
+"""
 if [] != vars:
     target = "LAW_CAT_CD"
 
@@ -51,13 +51,13 @@ if [] != vars:
     show()
 else:
     print("Sparsity per class: there are no variables.")
-
+"""
 
 variables_types: dict[str, list] = get_variable_types(data)
 numeric: list[str] = variables_types["numeric"]
 corr_mtx: DataFrame = data[numeric].corr().abs()
 
-figure()
+figure(figsize=(9, 6))
 heatmap(
     abs(corr_mtx),
     xticklabels=numeric,

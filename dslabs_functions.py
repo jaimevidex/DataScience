@@ -199,11 +199,14 @@ def plot_multiline_chart(
     xlabel: str = "",
     ylabel: str = "",
     percentage: bool = False,
+    remove_xticks: bool = False,
 ) -> Axes:
     if ax is None:
         ax = gca()
     ax = set_chart_labels(ax=ax, title=title, xlabel=xlabel, ylabel=ylabel)
-    ax = set_chart_xticks(xvalues, ax=ax, percentage=percentage)
+    print("puxa")
+    if not remove_xticks:
+        ax = set_chart_xticks(xvalues, ax=ax, percentage=percentage)
     legend: list = []
     for name, y in yvalues.items():
         ax.plot(xvalues, y)
@@ -211,6 +214,7 @@ def plot_multiline_chart(
         if any(v < 0 for v in y) and percentage:
             ax.set_ylim(-1.0, 1.0)
     ax.legend(legend, fontsize="xx-small")
+    print("estica")
     return ax
 
 

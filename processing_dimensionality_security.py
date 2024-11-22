@@ -58,5 +58,5 @@ plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
 savefig(f"Images/{file_tag}_variable_types.png")
-show()
+#show()
 

@@ -19,7 +19,7 @@ data: DataFrame = read_csv(filename, na_values="", index_col=None)
 
 variables_types: dict[str, list] = get_variable_types(data)
 numeric: list[str] = variables_types["numeric"]
-
+"""
 # Boxplot for all numeric variables
 print("General Boxplot")
 if [] != numeric:
@@ -30,7 +30,7 @@ if [] != numeric:
     #plt.show()
 else:
     print("There are no numeric variables.")
-
+"""
 # Boxplot for each numeric variable
 print("Boxplots")
 if [] != numeric:
@@ -53,8 +53,65 @@ else:
     print("There are no numeric variables.")
 
 
-NR_STDEV: int = 4
-IQR_FACTOR: float = 2.0
+NR_STDEV: float = [2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 6, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   2, 2, 2, 
+                   6, 2, 2, 
+                   6, 2, 6, 
+                   2, 2, 1, 
+                   2, 2, 2, 
+                   2, 2, 8, 
+                   2, 2, 2, 
+                   0.5, 2, 2, 
+                   2, 2]
+IQR_FACTOR: float = [1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,0.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1,1,
+                     1,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,0.5,
+                     0.5,0.5,0.5,
+                     1,0,5,1,
+                     1.5,1.5,0.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1.5,1.5,1.5,
+                     1,1.5,1.5,
+                     1.5,1.5]
+
 
 # Function to determine the outlier thresholds for a variable
 
@@ -63,6 +120,8 @@ def determine_outlier_thresholds_for_var(
 ) -> tuple[float, float]:
     top: float = 0
     bottom: float = 0
+
+
     if std_based:
         std: float = threshold * summary5["std"]
         top = summary5["mean"] + std
@@ -74,13 +133,36 @@ def determine_outlier_thresholds_for_var(
 
     return top, bottom
 
+# Show the box plots without outliers
+print("Boxplots without outliers")
+if [] != numeric:
+    rows, cols = define_grid(len(numeric))
+    fig, axs = subplots(
+        rows, cols, figsize=(cols * HEIGHT, rows * HEIGHT), squeeze=False
+    )
+    i, j = 0, 0
+    for n in range(len(numeric)):
+        top, bottom = determine_outlier_thresholds_for_var(
+            data[numeric[n]].describe(), std_based=False, threshold=IQR_FACTOR[numeric.index(numeric[n])]
+        )
+        data_no_outliers: DataFrame = data[
+            (data[numeric[n]] >= bottom) & (data[numeric[n]] <= top)
+        ]
+        axs[i, j].set_title("Boxplot for %s without outliers" % numeric[n])
+        axs[i, j].boxplot(data_no_outliers[numeric[n]].dropna().values)
+        i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
+    savefig(f"Images/{file_tag}_single_boxplots_no_outliers.png")
+    #show()
+else:
+    print("There are no numeric variables.")
+
 # Function to count the number of outliers for each variable
 
 def count_outliers(
     data: DataFrame,
     numeric: list[str],
-    nrstdev: int = NR_STDEV,
-    iqrfactor: float = IQR_FACTOR,
+    nrstdev: list[int] = NR_STDEV,
+    iqrfactor: list[float] = IQR_FACTOR,
 ) -> dict:
     outliers_iqr: list = []
     outliers_stdev: list = []
@@ -90,14 +172,14 @@ def count_outliers(
         top: float
         bottom: float
         top, bottom = determine_outlier_thresholds_for_var(
-            summary5[var], std_based=True, threshold=nrstdev
+            summary5[var], std_based=True, threshold=nrstdev[numeric.index(var)]
         )
         outliers_stdev += [
             data[data[var] > top].count()[var] + data[data[var] < bottom].count()[var]
         ]
 
         top, bottom = determine_outlier_thresholds_for_var(
-            summary5[var], std_based=False, threshold=iqrfactor
+            summary5[var], std_based=False, threshold=iqrfactor[numeric.index(var)]
         )
         outliers_iqr += [
             data[data[var] > top].count()[var] + data[data[var] < bottom].count()[var]
@@ -123,6 +205,7 @@ if [] != numeric:
 else:
     print("There are no numeric variables.")
 
+"""
 # Histogram for each numeric variable
 print("Histograms")
 if [] != numeric:
@@ -231,4 +314,4 @@ plot_bar_chart(
     values.to_list(),
     title=f"Target distribution (target={target})",
 )
-savefig(f"Images/{file_tag}_class_distribution.png")
+savefig(f"Images/{file_tag}_class_distribution.png")"""

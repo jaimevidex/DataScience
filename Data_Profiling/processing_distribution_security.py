@@ -25,7 +25,7 @@ if [] != numeric:
     plt.figure(figsize=(10, 9))
     data[numeric].boxplot(rot=45)
     plt.ylim(-100, 1000)  # Set the y-axis limits as needed
-    plt.savefig(f"Images/{file_tag}_global_boxplot.png")
+    plt.savefig(f"Data_Profiling/Images/{file_tag}_global_boxplot.png")
     #plt.show()
 else:
     print("There are no numeric variables.")
@@ -46,14 +46,14 @@ if [] != numeric:
         axs[i, j].set_title("Boxplot for %s" % numeric[n])
         axs[i, j].boxplot(data[numeric[n]].dropna().values)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"Images/{file_tag}_single_boxplots.png")
+    savefig(f"Data_Profiling/Images/{file_tag}_single_boxplots.png")
     #show()
 else:
     print("There are no numeric variables.")
 
 
-NR_STDEV: int = 4
-IQR_FACTOR: float = 2.0
+IQR_FACTOR: float = [1.5,1.5,2.0,1.5,0.0,3.7,8.5,8.5,3.6]
+NR_STDEV: int = [3,2,3,2,2,5,8,8,5]
 
 # Function to determine the outlier thresholds for a variable
 
@@ -78,8 +78,8 @@ def determine_outlier_thresholds_for_var(
 def count_outliers(
     data: DataFrame,
     numeric: list[str],
-    nrstdev: int = NR_STDEV,
-    iqrfactor: float = IQR_FACTOR,
+    nrstdev: list[int] = NR_STDEV,
+    iqrfactor: list[float] = IQR_FACTOR,
 ) -> dict:
     outliers_iqr: list = []
     outliers_stdev: list = []
@@ -89,14 +89,14 @@ def count_outliers(
         top: float
         bottom: float
         top, bottom = determine_outlier_thresholds_for_var(
-            summary5[var], std_based=True, threshold=nrstdev
+            summary5[var], std_based=True, threshold=nrstdev[numeric.index(var)]
         )
         outliers_stdev += [
             data[data[var] > top].count()[var] + data[data[var] < bottom].count()[var]
         ]
 
         top, bottom = determine_outlier_thresholds_for_var(
-            summary5[var], std_based=False, threshold=iqrfactor
+            summary5[var], std_based=False, threshold=iqrfactor[numeric.index(var)]
         )
         outliers_iqr += [
             data[data[var] > top].count()[var] + data[data[var] < bottom].count()[var]
@@ -117,11 +117,35 @@ if [] != numeric:
         ylabel="nr outliers",
         percentage=False,
     )
-    savefig(f"Images/{file_tag}_outliers_standard.png")
+    savefig(f"Data_Profiling/Images/{file_tag}_outliers_standard.png")
     #show()
 else:
     print("There are no numeric variables.")
 
+"""
+# Show the box plots without outliers
+print("Boxplots without outliers")
+if [] != numeric:
+    rows, cols = define_grid(len(numeric))
+    fig, axs = subplots(
+        rows, cols, figsize=(cols * HEIGHT, rows * HEIGHT), squeeze=False
+    )
+    i, j = 0, 0
+    for n in range(len(numeric)):
+        top, bottom = determine_outlier_thresholds_for_var(
+            data[numeric[n]].describe(), std_based=False, threshold=IQR_FACTOR[numeric.index(numeric[n])]
+        )
+        data_no_outliers: DataFrame = data[
+            (data[numeric[n]] >= bottom) & (data[numeric[n]] <= top)
+        ]
+        axs[i, j].set_title("Boxplot for %s without outliers" % numeric[n])
+        axs[i, j].boxplot(data_no_outliers[numeric[n]].dropna().values)
+        i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
+    savefig(f"Data_Profiling/Images/{file_tag}_single_boxplots_no_outliers.png")
+    #show()
+else:
+    print("There are no numeric variables.")
+"""
 # Histogram for each numeric variable
 print("Histograms")
 if [] != numeric:
@@ -140,7 +164,7 @@ if [] != numeric:
         )
         axs[i, j].hist(data[numeric[n]].dropna().values, "auto")
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"Images/{file_tag}_single_histograms_numeric.png")
+    savefig(f"Data_Profiling/Images/{file_tag}_single_histograms_numeric.png")
     #show()
 else:
     print("There are no numeric variables.")
@@ -188,7 +212,7 @@ if [] != numeric:
     for n in range(len(numeric)):
         histogram_with_distributions(axs[i, j], data[numeric[n]].dropna(), numeric[n])
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"Images/{file_tag}_histogram_numeric_distribution.png")
+    savefig(f"Data_Profiling/Images/{file_tag}_histogram_numeric_distribution.png")
     show()
 else:
     print("There are no numeric variables.")
@@ -215,7 +239,7 @@ if [] != symbolic:
             percentage=False,
         )
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"Images/{file_tag}_histograms_symbolic.png")
+    savefig(f"Data_Profiling/Images/{file_tag}_histograms_symbolic.png")
     #show()
 else:
     print("There are no symbolic variables.")
@@ -232,5 +256,5 @@ plot_bar_chart(
     values.to_list(),
     title=f"Target distribution (target={target})",
 )
-savefig(f"Images/{file_tag}_class_distribution.png")
+savefig(f"Data_Profiling/Images/{file_tag}_class_distribution.png")
 #show()

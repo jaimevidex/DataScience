@@ -19,7 +19,7 @@ data: DataFrame = read_csv(filename, na_values="", index_col=None)
 
 variables_types: dict[str, list] = get_variable_types(data)
 numeric: list[str] = variables_types["numeric"]
-"""
+
 # Boxplot for all numeric variables
 print("General Boxplot")
 if [] != numeric:
@@ -30,7 +30,7 @@ if [] != numeric:
     #plt.show()
 else:
     print("There are no numeric variables.")
-"""
+
 # Boxplot for each numeric variable
 print("Boxplots")
 if [] != numeric:
@@ -80,7 +80,7 @@ NR_STDEV: float = [2, 2, 2,
                    2, 2, 2, 
                    2, 2, 8, 
                    2, 2, 2, 
-                   0.5, 2, 2, 
+                   2, 2, 2, 
                    2, 2]
 IQR_FACTOR: float = [1.5,1.5,1.5,
                      1.5,1.5,1.5,
@@ -205,7 +205,6 @@ if [] != numeric:
 else:
     print("There are no numeric variables.")
 
-"""
 # Histogram for each numeric variable
 print("Histograms")
 if [] != numeric:
@@ -314,4 +313,4 @@ plot_bar_chart(
     values.to_list(),
     title=f"Target distribution (target={target})",
 )
-savefig(f"Images/{file_tag}_class_distribution.png")"""
+savefig(f"Images/{file_tag}_class_distribution.png")

@@ -3,6 +3,7 @@ from pandas import DataFrame, read_csv
 from matplotlib.pyplot import savefig, show, figure
 from dslabs_functions import plot_multibar_chart, CLASS_EVAL_METRICS, run_NB, run_KNN
 from sklearn.naive_bayes import _BaseNB, GaussianNB, BernoulliNB
+from imblearn.over_sampling import SMOTE 
 
 DELTA_IMPROVE: float = 0.001
 
@@ -11,9 +12,10 @@ def run_NB1(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float
         "GaussianNB": GaussianNB(),
         "BernoulliNB": BernoulliNB(),
     }
-    best_model: GaussianNB | MultinomialNB | BernoulliNB = None  # type: ignore
+    best_model: GaussianNB | BernoulliNB = None  # type: ignore
     best_performance: float = 0.0
     eval: dict[str, float] = {}
+
 
     for clf in estimators:
         estimators[clf].fit(trnX, trnY)
@@ -38,7 +40,7 @@ def evaluate_approach(
     tstX: ndarray = test.values
     eval: dict[str, list] = {}
 
-    eval_NB: dict[str, float] = run_NB(trnX, trnY, tstX, tstY, metric=metric)
+    eval_NB: dict[str, float] = run_NB1(trnX, trnY, tstX, tstY, metric=metric)
     eval_KNN: dict[str, float] = run_KNN(trnX, trnY, tstX, tstY, metric=metric)
     if eval_NB != {} and eval_KNN != {}:
         for met in CLASS_EVAL_METRICS:
@@ -46,12 +48,12 @@ def evaluate_approach(
     return eval
 
 
-file_tag = "class_financial_distress_scaled_minmax"
-filename = "./Data/class_financial_distress_scaled_minmax.csv"
+file_tag = "class_financial_distress_eq_width"
+filename = "./Data/class_financial_distress_eq_width.csv"
 target = "CLASS"
 data: DataFrame = read_csv(filename, index_col=None, na_values="")
-train: DataFrame = read_csv("Data/train_data_minmax_economical.csv")
-test: DataFrame = read_csv("Data/test_data_minmax_economical.csv")
+train: DataFrame = read_csv("Data/train_data_eq_width_economical.csv")
+test: DataFrame = read_csv("Data/test_data_eq_width_economical.csv")
 
 figure()
 eval: dict[str, list] = evaluate_approach(train, test, target=target, metric="recall")

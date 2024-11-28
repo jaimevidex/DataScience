@@ -82,4 +82,6 @@ Label encoding
 label_encoder = LabelEncoder()
 df['LAW_CODE'] = label_encoder.fit_transform(df['LAW_CODE'])
 
+#print(df['LAW_CODE'])
+
 df.to_csv(f"./Data/{file_tag}_encoding.csv", index=True)

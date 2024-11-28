@@ -2,10 +2,13 @@ from pandas import read_csv, DataFrame
 import pandas as pd
 from dslabs_functions import get_variable_types
 
-filename = "Data/class_ny_arrests_drop_outliers.csv"
+filename = "Data/class_ny_arrests_encoding.csv"
 file_tag = "class_ny_arrests"
 data: DataFrame = read_csv(filename, na_values="", index_col=None)
 print(f"Original data: {data.shape}")
+
+#print columns
+print(f"Columns: {data.columns}")
 
 # Filter how to get the column PD_CD with missing values to know the count 
 
@@ -25,7 +28,8 @@ print(f"Data after dropping missing values: {data_no_missing_values.shape}")
 # Function to get the first KY_CD, PD_DESC, and OFNS_DESC values for the specificied PD_CD value
 def get_first_values(data: DataFrame, value: int) -> DataFrame:
     firstValue = data[data_no_missing_values["PD_CD"] == value].head(1)
-    return firstValue[["KY_CD", "PD_DESC", "OFNS_DESC"]]
+    #return firstValue[["KY_CD", "PD_DESC", "OFNS_DESC"]]
+    return firstValue[["KY_CD"]]
 
 # For all the missing values get the first KY_CD, PD_DESC, and OFNS_DESC values and substitute them
 for index, row in missing_values.iterrows():
@@ -33,8 +37,8 @@ for index, row in missing_values.iterrows():
     if first_values.empty:
         continue
     missing_values.at[index, "KY_CD"] = first_values["KY_CD"].values[0]
-    missing_values.at[index, "PD_DESC"] = first_values["PD_DESC"].values[0]
-    missing_values.at[index, "OFNS_DESC"] = first_values["OFNS_DESC"].values[0]
+    #missing_values.at[index, "PD_DESC"] = first_values["PD_DESC"].values[0]
+    #missing_values.at[index, "OFNS_DESC"] = first_values["OFNS_DESC"].values[0]
 
 missing_values.dropna(inplace=True)
 print(f"Missing values recovered: {missing_values.shape}")

@@ -21,9 +21,11 @@ perp_race: dict[str, int] = {
     "UNKNOWN": 0,
     "WHITE": 1,
     "WHITE HISPANIC": 2,
-    "ASIAN / PACIFIC ISLANDER": 3,
-    "BLACK HISPANIC": 4,
-    "BLACK": 5
+    "AMERICAN INDIAN/ALASKAN NATIVE": 3,
+    "ASIAN / PACIFIC ISLANDER": 4,
+    "BLACK HISPANIC": 5,
+    "BLACK": 6,
+    "OTHER": 7
 }
 
 arrest_boro: dict[str, int] = {
@@ -35,6 +37,7 @@ arrest_boro: dict[str, int] = {
 }
 
 age_group: dict[str, int] = {
+    "UNKNOWN": -1,
     "<18": 0,
     "18-24": 1,
     "25-44": 2,
@@ -64,7 +67,12 @@ df = df.drop(columns=['ARREST_DATE'])
 """
 Delete columns as directly correlated with other variables
 """
-df = df.drop(columns=['PD_DESC', 'OFNS_DESC'])
+df = df.drop(columns=['PD_DESC', 'OFNS_DESC', 'LAW_CODE'])
+
+"""
+Turn the LAW_CAT_CD into a discrete variable
+"""
+df['LAW_CAT_CD'] = df['LAW_CAT_CD'].astype('category')
 
 """
 TODO: Treat Law Code

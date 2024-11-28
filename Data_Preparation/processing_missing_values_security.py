@@ -5,7 +5,7 @@ from dslabs_functions import get_variable_types
 filename = "Data/class_ny_arrests_encoding.csv"
 file_tag = "class_ny_arrests"
 filename = f"Data/{file_tag}_encoding.csv"
-data: DataFrame = read_csv(filename, na_values="", index_col=None)
+data: DataFrame = read_csv(filename, na_values="", index_col="ARREST_KEY")
 print(f"Original data: {data.shape}")
 
 #print columns

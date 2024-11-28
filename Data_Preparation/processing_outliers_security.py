@@ -10,14 +10,15 @@ from numpy import ndarray, log
 filename = "Data/class_ny_arrests_missing_values.csv"
 file_tag = "class_ny_arrests"
 filename = f"Data/{file_tag}_missing_values.csv"
-data: DataFrame = read_csv(filename, na_values="", index_col=None)
+data: DataFrame = read_csv(filename, na_values="", index_col="ARREST_KEY")
 print(f"Original data: {data.shape}")
 
-NR_STDEV: list [int] = [3,2,3,2,2,5,8,8,5,2,2,2]
-IQR_FACTOR: float = [1.5,1.5,2.0,1.5,0.0,3.7,8.5,8.5,3.6,1.5,1.5, 1.5]
+#IQR_FACTOR: float = [1.5,1.5,1.5,1.5,1.5,2.0,1.5,1.5,3.7,8.5,8.5,3.6,1.5,1.5,1.5]
+NR_STDEV: list [int] = [3,2,2,2,2,3,2,2,5,8,8,5,2,2,3]
 
 numeric_vars: list[str] = get_variable_types(data)["numeric"]
-
+print(f"Numeric variables: {numeric_vars}")
+'''
 print("Boxplots")
 if [] != numeric_vars:
     rows: int
@@ -103,10 +104,38 @@ else:
     print("There are no numeric variables.")
 
 
+print("Boxplots without outliers")
+if [] != numeric_vars:
+    rows, cols = define_grid(len(numeric_vars))
+    fig, axs = subplots(
+        rows, cols, figsize=(cols * HEIGHT, rows * HEIGHT), squeeze=False
+    )
+    i, j = 0, 0
+    for n in range(len(numeric_vars)):
+        if n == 4:
+            continue
+        top, bottom = determine_outlier_thresholds_for_var(
+            data[numeric_vars[n]].describe(), std_based=False, threshold=NR_STDEV[numeric_vars.index(numeric_vars[n])]
+        )
+        data_no_outliers: DataFrame = data[
+            (data[numeric_vars[n]] >= bottom) & (data[numeric_vars[n]] <= top)
+        ]
+        axs[i, j].set_title("Boxplot for %s without outliers" % numeric_vars[n])
+        axs[i, j].boxplot(data_no_outliers[numeric_vars[n]].dropna().values)
+        i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
+    savefig(f"Data_Preparation/Images/{file_tag}_single_boxplots_no_outliers.png")
+    #show()
+else:
+    print("There are no numeric variables.")
+'''
+
 if numeric_vars is not None:
     df: DataFrame = data.copy(deep=True)
     summary5: DataFrame = data[numeric_vars].describe()
     for var in numeric_vars:
+        #skip column 4
+        if var == "JURISDICTION_CODE" or var == "Y_COORD_CD" or var == "Latitude" or var == "KY_CD":
+            continue
         top_threshold, bottom_threshold = determine_outlier_thresholds_for_var(
             summary5[var], std_based=True, threshold=NR_STDEV[numeric_vars.index(var)]
         )
@@ -116,3 +145,7 @@ if numeric_vars is not None:
     print(f"Data after dropping outliers: {df.shape}")
 else:
     print("There are no numeric variables")
+
+# print the percentage of data left after dropping outliers
+percentage_left: float = (df.shape[0] / data.shape[0]) * 100
+print(f"Percentage of data left after dropping outliers: {percentage_left:.2f}%")

@@ -9,6 +9,7 @@ from numpy import ndarray, log
 
 filename = "Data/class_ny_arrests_missing_values.csv"
 file_tag = "class_ny_arrests"
+filename = f"Data/{file_tag}_missing_values.csv"
 data: DataFrame = read_csv(filename, na_values="", index_col=None)
 print(f"Original data: {data.shape}")
 

@@ -1,5 +1,6 @@
 from pandas import read_csv, DataFrame
 from dslabs_functions import get_variable_types
+from sklearn.preprocessing import LabelEncoder
 
 filename = "Data/class_ny_arrests.csv"
 file_tag = "class_ny_arrests"
@@ -67,7 +68,7 @@ df = df.drop(columns=['ARREST_DATE'])
 """
 Delete columns as directly correlated with other variables
 """
-df = df.drop(columns=['PD_DESC', 'OFNS_DESC', 'LAW_CODE'])
+df = df.drop(columns=['PD_DESC', 'OFNS_DESC'])
 
 """
 Turn the LAW_CAT_CD into a discrete variable
@@ -75,7 +76,12 @@ Turn the LAW_CAT_CD into a discrete variable
 df['LAW_CAT_CD'] = df['LAW_CAT_CD'].astype('category')
 
 """
-TODO: Treat Law Code
+Label encoding
 """
+# Assuming df is your DataFrame and 'LAW_CODE' is the column to encode
+label_encoder = LabelEncoder()
+df['LAW_CODE'] = label_encoder.fit_transform(df['LAW_CODE'])
+
+print(df['LAW_CODE'])
 
 df.to_csv(f"./Data/{file_tag}_encoding.csv", index=True)

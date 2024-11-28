@@ -48,17 +48,17 @@ def evaluate_approach(
     return eval
 
 
-file_tag = "class_financial_distress_eq_width"
-filename = "./Data/class_financial_distress_eq_width.csv"
+file_tag = "class_financial_distress_eq_frequency"
+filename = "./Data/class_financial_distress_eq_frequency.csv"
 target = "CLASS"
 data: DataFrame = read_csv(filename, index_col=None, na_values="")
-train: DataFrame = read_csv("Data/train_data_eq_width_economical.csv")
-test: DataFrame = read_csv("Data/test_data_eq_width_economical.csv")
+train: DataFrame = read_csv("Data/train_data_eq_frequency_economical.csv")
+test: DataFrame = read_csv("Data/test_data_eq_frequency_economical.csv")
 
 figure()
 eval: dict[str, list] = evaluate_approach(train, test, target=target, metric="recall")
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"{file_tag} evaluation", percentage=True
 )
-savefig(f"Data_Preparation/Images/{file_tag}_eval.png")
+savefig(f"Data_Preparation/Images/class_financial_distress_discretization/{file_tag}_eval.png")
 show()

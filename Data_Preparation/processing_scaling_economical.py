@@ -26,7 +26,7 @@ df_minmax.to_csv(f"Data/{file}_scaled_minmax.csv", index=None)
 
 
 fig, axs = subplots(1, 1, figsize=(100, 10), squeeze=False)
-
+"""
 axs[0, 0].set_title("Z-score normalization")
 data.boxplot(ax=axs[0, 0])
 axs[0, 0].tick_params(axis='x', rotation=-45)
@@ -41,7 +41,7 @@ axs[0, 0].set_title("MinMax normalization")
 df_minmax.boxplot(ax=axs[0, 0])
 axs[0, 0].tick_params(axis='x', rotation=-45)
 show()
-
+"""
 
 
 

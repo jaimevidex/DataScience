@@ -4,7 +4,7 @@ from sklearn.preprocessing import KBinsDiscretizer
 from pandas import concat
 from matplotlib.pyplot import subplots, show, savefig
 
-filename = "./Data/class_financial_distress.csv"
+filename = "./Data/class_financial_distress_smote.csv"
 file = "class_financial_distress"
 
 data: DataFrame = read_csv(

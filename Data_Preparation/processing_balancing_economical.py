@@ -32,7 +32,8 @@ plot_bar_chart(
 savefig(f"Data_Preparation/Images/{file_tag}_eval.png")
 show()
 
-"apply oversampling"
+""" Oversampling """
+
 df_positives: Series = original[original[target] == positive_class]
 df_negatives: Series = original[original[target] == negative_class]
 
@@ -47,7 +48,7 @@ print("Majority class=", negative_class, ":", len(df_negatives))
 print("Proportion:", round(len(df_pos_sample) / len(df_negatives), 2), ": 1")
 
 
-"""SMOTE"""
+""" SMOTE """
 
 RANDOM_STATE = 42
 
@@ -68,3 +69,15 @@ print(
     ": 1",
 )
 print(df_smote.shape)
+
+""" Undersampling """
+
+df_neg_sample: DataFrame = DataFrame(
+    df_negatives.sample(len(df_positives), replace=False)
+)
+df_under: DataFrame = concat([df_neg_sample, df_positives], axis=0)
+df_under.to_csv(f"data/{file}_under.csv", index=False)
+
+print("Minority class=", positive_class, ":", len(df_positives))
+print("Majority class (after undersampling)=", negative_class, ":", len(df_neg_sample))
+print("Proportion (undersampled):", round(len(df_positives) / len(df_neg_sample), 2), ": 1")

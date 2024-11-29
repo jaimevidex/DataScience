@@ -1,6 +1,10 @@
 from pandas import read_csv, DataFrame
 from dslabs_functions import get_variable_types
 from sklearn.preprocessing import LabelEncoder
+from math import pi, sin, cos
+from numpy import ndarray
+from pandas import concat
+from sklearn.preprocessing import OneHotEncoder
 
 filename = "Data/class_ny_arrests.csv"
 file_tag = "class_ny_arrests"
@@ -18,6 +22,7 @@ male_female: dict[str, int] = {"M": 0, "F": 1}
 """
 Nominal encoding
 """
+'''
 perp_race: dict[str, int] = {
     "UNKNOWN": 0,
     "WHITE": 1,
@@ -28,6 +33,25 @@ perp_race: dict[str, int] = {
     "BLACK": 6,
     "OTHER": 7
 }
+'''
+
+def dummify(df: DataFrame, vars_to_dummify: list[str]) -> DataFrame:
+    other_vars: list[str] = [c for c in df.columns if not c in vars_to_dummify]
+
+    enc = OneHotEncoder(
+        handle_unknown="ignore", sparse_output=False, drop="if_binary"
+    )
+    trans: ndarray = enc.fit_transform(df[vars_to_dummify])
+
+    new_vars: ndarray = enc.get_feature_names_out(vars_to_dummify)
+    dummy = DataFrame(trans, columns=new_vars, index=df.index)
+
+    final_df: DataFrame = concat([df[other_vars], dummy], axis=1)
+    return final_df
+
+
+data = dummify(data, ["PERP_RACE"])
+
 
 arrest_boro: dict[str, int] = {
     "B": 0,
@@ -46,21 +70,47 @@ age_group: dict[str, int] = {
     "65+": 4
 }
 
+monthly_val:dict[int, float] = {
+    1: 0,
+    2: pi/6,
+    3: pi/3,
+    4: pi/2,
+    5: 2*pi/3,
+    6: 5*pi/6,
+    7: pi,
+    8: -5*pi/6,
+    9: -2*pi/3,
+    10: -pi/2,
+    11: -pi/3,
+    12: -pi/6
+}
+
+def encode_cyclic_variables(data: DataFrame, vars: list[str]) -> None:
+    for v in vars:
+        x_max: float | int = max(data[v])
+        data[v + "_sin"] = data[v].apply(lambda x: round(sin(2 * pi * x / x_max), 3))
+        data[v + "_cos"] = data[v].apply(lambda x: round(cos(2 * pi * x / x_max), 3))
+    return
+
+
+data['ARREST_MONTH'] = data['ARREST_DATE'].dt.month
+
 encoding: dict[str, dict[str, int]] = {
     "LAW_CAT_CD": felony_misdemeanor,
     "PERP_SEX": male_female,
-    "PERP_RACE": perp_race,
     "ARREST_BORO": arrest_boro,
-    "AGE_GROUP": age_group
+    "AGE_GROUP": age_group,
+    "ARREST_MONTH": monthly_val
 }
 
+
 df: DataFrame = data.replace(encoding, inplace=False)
+encode_cyclic_variables(data, ["ARREST_MONTH"])
 
 """
 Create date variables and drop the original date
 """
 df['ARREST_DAY'] = df['ARREST_DATE'].dt.day
-df['ARREST_MONTH'] = df['ARREST_DATE'].dt.month
 df['ARREST_YEAR'] = df['ARREST_DATE'].dt.year
 
 df = df.drop(columns=['ARREST_DATE'])

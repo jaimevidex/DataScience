@@ -7,18 +7,17 @@ from numpy import ndarray, log
 
 
 
-filename = "Data/class_ny_arrests_missing_values.csv"
 file_tag = "class_ny_arrests"
-filename = f"Data/{file_tag}_missing_values.csv"
+filename = f"Data/{file_tag}_missing_values_method1.csv"
 data: DataFrame = read_csv(filename, na_values="", index_col="ARREST_KEY")
 print(f"Original data: {data.shape}")
 
-#IQR_FACTOR: float = [1.5,1.5,1.5,1.5,1.5,2.0,1.5,1.5,3.7,8.5,8.5,3.6,1.5,1.5,1.5]
-NR_STDEV: list [int] = [3,2,2,2,2,3,2,2,5,8,8,5,2,2,3]
+IQR_FACTOR: float = [1.5,1.5,1.5,1.5,1.5,2.0,1.5,1.5,3.7,8.5,8.5,3.6,1.5,1.5,1.5]
+NR_STDEV: list [int] = [3,2,2,2,2,3,2,2,5,8,8,5,2,2,4]
 
 numeric_vars: list[str] = get_variable_types(data)["numeric"]
 print(f"Numeric variables: {numeric_vars}")
-'''
+#'''
 print("Boxplots")
 if [] != numeric_vars:
     rows: int
@@ -127,7 +126,7 @@ if [] != numeric_vars:
     #show()
 else:
     print("There are no numeric variables.")
-'''
+#'''
 
 if numeric_vars is not None:
     df: DataFrame = data.copy(deep=True)

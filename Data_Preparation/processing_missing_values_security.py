@@ -1,6 +1,9 @@
 from pandas import read_csv, DataFrame
 import pandas as pd
 from dslabs_functions import get_variable_types
+from sklearn.impute import SimpleImputer, KNNImputer
+from pandas import concat
+from numpy import ndarray
 
 filename = "Data/class_ny_arrests_encoding.csv"
 file_tag = "class_ny_arrests"
@@ -49,5 +52,49 @@ data_no_missing_values = pd.concat([data_no_missing_values, missing_values])
 print(f"Data after recovering missing values: {data_no_missing_values.shape}")
 
 # Save the data with missing values recovered
-data_no_missing_values.to_csv(f"./Data/{file_tag}_missing_values.csv", index=True)
+data_no_missing_values.to_csv(f"./Data/{file_tag}_missing_values_method1.csv", index=True)
+
+
+def mvi_by_filling(data: DataFrame, strategy: str = "frequent") -> DataFrame:
+    df: DataFrame
+    variables: dict = get_variable_types(data)
+    stg_num, v_num = "mean", -1
+    stg_sym, v_sym = "most_frequent", "NA"
+    stg_bool, v_bool = "most_frequent", False
+    if strategy != "knn":
+        lst_dfs: list = []
+        if strategy == "constant":
+            stg_num, stg_sym, stg_bool = "constant", "constant", "constant"
+        if len(variables["numeric"]) > 0:
+            imp = SimpleImputer(strategy=stg_num, fill_value=v_num, copy=True)
+            tmp_nr = DataFrame(
+                imp.fit_transform(data[variables["numeric"]]),
+                columns=variables["numeric"],
+            )
+            lst_dfs.append(tmp_nr)
+        if len(variables["symbolic"]) > 0:
+            imp = SimpleImputer(strategy=stg_sym, fill_value=v_sym, copy=True)
+            tmp_sb = DataFrame(
+                imp.fit_transform(data[variables["symbolic"]]),
+                columns=variables["symbolic"],
+            )
+            lst_dfs.append(tmp_sb)
+        if len(variables["binary"]) > 0:
+            imp = SimpleImputer(strategy=stg_bool, fill_value=v_bool, copy=True)
+            tmp_bool = DataFrame(
+                imp.fit_transform(data[variables["binary"]]),
+                columns=variables["binary"],
+            )
+            lst_dfs.append(tmp_bool)
+        df = concat(lst_dfs, axis=1)
+    else:
+        imp = KNNImputer(n_neighbors=5)
+        imp.fit(data)
+        ar: ndarray = imp.transform(data)
+        df = DataFrame(ar, columns=data.columns, index=data.index)
+    return df
+
+data_filled: DataFrame = mvi_by_filling(data_no_missing_values, "frequent")
+print(f"Data after filling missing values: {data_filled.shape}")
+data_filled.to_csv(f"./Data/{file_tag}_missing_values_method2.csv", index=True)
 

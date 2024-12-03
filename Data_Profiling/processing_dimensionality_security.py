@@ -18,6 +18,12 @@ data: DataFrame = read_csv(filename, na_values="", index_col=None)
 
 print(data.shape)
 
+data['CLASS'] = data['JURISDICTION_CODE'].apply(lambda x: 'NY' if x <3 else 'nonNY')
+
+# save
+data.to_csv(filename, index=False)
+
+
 # Plot a graph with each of them
 figure(figsize=(4, 5))
 values: dict[str, int] = {"nr records": data.shape[0], "nr variables": data.shape[1]}
@@ -59,4 +65,3 @@ plot_bar_chart(
 )
 savefig(f"Images/{file_tag}_variable_types.png")
 #show()
-

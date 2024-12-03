@@ -245,7 +245,7 @@ else:
     print("There are no symbolic variables.")
 
     
-target = "LAW_CAT_CD"
+target = "CLASS"
 print(data[target].value_counts())
 values: Series = data[target].value_counts()
 print(values)

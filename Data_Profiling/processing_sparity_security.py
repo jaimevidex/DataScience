@@ -13,9 +13,9 @@ data = data.dropna()
 
 
 vars: list = data.columns.to_list()
-
+"""
 if [] != vars:
-    target = "LAW_CAT_CD"
+    target = "CLASS"
 
     n: int = len(vars) - 1
     fig: Figure
@@ -28,7 +28,7 @@ if [] != vars:
             print(f"Processing {i + 1}: {j + 1} of {len(vars)}")
             var2: str = vars[j]
             plot_multi_scatters_chart(data, var1, var2, ax=axs[i, j - 1])
-    savefig(f"Images/{file_tag}_sparsity_study.png")
+    savefig(f"Data_Profiling/Images/{file_tag}_sparsity_study.png")
     show()
 else:
     print("Sparsity class: there are no variables.")
@@ -38,7 +38,7 @@ else:
 """
 # Sparsity per class individual
 if [] != vars:
-    target = "LAW_CAT_CD"
+    target = "CLASS"
 
 
     for i in range(len(vars)):
@@ -49,13 +49,13 @@ if [] != vars:
             var2: str = vars[j]
             plot_multi_scatters_chart(data,var1, var2, target,ax=ax)
             print(f"Saving {file_tag}_{i+1}_{j+1}_sparsity_per_class_study.png")
-            savefig(f"Images/{file_tag}_{i+1}_{j+1}_sparsity_per_class_study.png")
+            savefig(f"Data_Profiling/Images/153/{file_tag}_{i+1}_{j+1}_sparsity_per_class_study.png")
     else:
         print("Sparsity per class: there are no variables.")
 """
 # Sparsity per class all
 if [] != vars:
-    target = "LAW_CAT_CD"
+    target = "CLASS"
 
     n: int = len(vars) - 1
     fig, axs = subplots(n, n, figsize=(n * HEIGHT/2, n * HEIGHT/2), squeeze=False)
@@ -66,7 +66,7 @@ if [] != vars:
             var2: str = vars[j]
             plot_multi_scatters_chart(data, var1, var2, target, ax=axs[i, j - 1])
             print(f"Processing {i + 1}: {j + 1} of {len(vars)}")
-    savefig(f"Images/{file_tag}_sparsity_per_class_study.png")
+    savefig(f"Data_Profiling/Images/{file_tag}_sparsity_per_class_study.png")
     #show()
 else:
     print("Sparsity per class: there are no variables.")
@@ -85,5 +85,6 @@ heatmap(
     vmin=0,
     vmax=1,
 )
-savefig(f"Images/{file_tag}_correlation_analysis.png")
+savefig(f"Data_Profiling/Images/{file_tag}_correlation_analysis.png")
 show()
+"""

@@ -18,10 +18,8 @@ data: DataFrame = read_csv(filename, na_values="", index_col=None)
 
 print(data.shape)
 
-data['CLASS'] = data['JURISDICTION_CODE'].apply(lambda x: 'NY' if x <3 else 'nonNY')
-
-# save
-data.to_csv(filename, index=False)
+# data['CLASS'] = data['JURISDICTION_CODE'].apply(lambda x: 'NY' if x <3 else 'nonNY')
+# data.to_csv(filename, index=False)
 
 
 # Plot a graph with each of them
@@ -30,7 +28,7 @@ values: dict[str, int] = {"nr records": data.shape[0], "nr variables": data.shap
 plot_bar_chart(
     list(values.keys()), list(values.values()), title="Nr of records vs nr variables"
 )
-savefig(f"Images/{file_tag}_records_variables.png")
+savefig(f"Data_Profiling/Images/{file_tag}_records_variables.png")
 #show()
 
 # Missing Values of each variable
@@ -48,7 +46,7 @@ plot_bar_chart(
     xlabel="variables",
     ylabel="nr missing values",
 )
-savefig(f"Images/{file_tag}_mv.png")
+savefig(f"Data_Profiling/Images/{file_tag}_mv.png")
 #show()
 
 # Show the different Variable Types
@@ -63,5 +61,5 @@ figure(figsize=(4, 5))
 plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
-savefig(f"Images/{file_tag}_variable_types.png")
+savefig(f"Data_Profiling/Images/{file_tag}_variable_types.png")
 #show()

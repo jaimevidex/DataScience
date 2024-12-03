@@ -34,5 +34,5 @@ data_ext: DataFrame = derive_date_variables(data, variables_types["date"])
 
 for v_date in variables_types["date"]:
     analyse_date_granularity(data, v_date, ["year", "quarter", "month", "day"])
-    savefig(f"images/{file_tag}_granularity_{v_date}.png")
+    savefig(f"Data_Profiling/Images/{file_tag}_granularity_{v_date}.png")
     show()

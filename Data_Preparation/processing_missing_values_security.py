@@ -5,9 +5,9 @@ from sklearn.impute import SimpleImputer, KNNImputer
 from pandas import concat
 from numpy import ndarray
 
-filename = "Data/class_ny_arrests_encoding.csv"
+method_tag = "encoding"
 file_tag = "class_ny_arrests"
-filename = f"Data/{file_tag}_encoding.csv"
+filename = f"Data/{method_tag}/{file_tag}_{method_tag}.csv"
 data: DataFrame = read_csv(filename, na_values="", index_col="ARREST_KEY")
 print(f"Original data: {data.shape}")
 

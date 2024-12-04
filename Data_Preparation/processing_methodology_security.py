@@ -7,7 +7,7 @@ from imblearn.over_sampling import SMOTE
 from joblib import Parallel, delayed
 
 DELTA_IMPROVE: float = 0.001
-method_tag = "scaled_zscore"
+method_tag = "smote"
 file_tag = "class_ny_arrests"
 
 DELTA_IMPROVE: float = 0.001
@@ -54,15 +54,13 @@ def evaluate_approach(
 
 filename = "Data/class_ny_arrests.csv"
 file_tag = "class_ny_arrests"
-train: DataFrame = read_csv(f"Data/{file_tag}_over.csv")
-test: DataFrame = read_csv(f"Data/test_{file_tag}_{method_tag}.csv")
-#train: DataFrame = read_csv(f"Data/train_{file_tag}_{method_tag}.csv")
-#test: DataFrame = read_csv(f"Data/test_{file_tag}_{method_tag}.csv")
+train: DataFrame = read_csv(f"Data/{file_tag}_{method_tag}.csv")
+test: DataFrame = read_csv(f"Data/test_{file_tag}_scaled_zscore.csv")
 
 figure()
 eval: dict[str, list] = evaluate_approach(train, test, target="LAW_CAT_CD", metric="recall")
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"{file_tag} evaluation", percentage=True
 )
-savefig(f"./{file_tag}_eval_{method_tag}_over.png")
+savefig(f"./{file_tag}_eval_{method_tag}.png")
 show()

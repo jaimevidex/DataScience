@@ -32,18 +32,27 @@ savefig(f"./{file_tag}_class_balance.png")
 show()
 
 "apply oversampling"
-#df_positives: Series = original[original[target] == positive_class]
-#df_negatives: Series = original[original[target] == negative_class]
-#
-#df_pos_sample: DataFrame = DataFrame(
-#    df_positives.sample(len(df_negatives), replace=True)
-#)
-#df_over: DataFrame = concat([df_pos_sample, df_negatives], axis=0)
-#df_over.to_csv(f"Data/{file_tag}_over.csv", index=False)
-#
-#print("Minority class=", positive_class, ":", len(df_pos_sample))
-#print("Majority class=", negative_class, ":", len(df_negatives))
-#print("Proportion:", round(len(df_pos_sample) / len(df_negatives), 2), ": 1")
+df_positives: Series = original[original[target] == positive_class]
+df_negatives: Series = original[original[target] == negative_class]
+
+df_pos_sample: DataFrame = DataFrame(
+    df_positives.sample(len(df_negatives), replace=True)
+)
+df_over: DataFrame = concat([df_pos_sample, df_negatives], axis=0)
+df_over.to_csv(f"Data/{file_tag}_oversampling.csv", index=False)
+
+print("Minority class=", positive_class, ":", len(df_pos_sample))
+print("Majority class=", negative_class, ":", len(df_negatives))
+print("Proportion:", round(len(df_pos_sample) / len(df_negatives), 2), ": 1")
+
+"apply undersampling"
+df_neg_sample: DataFrame = DataFrame(df_negatives.sample(len(df_positives)))
+df_under: DataFrame = concat([df_positives, df_neg_sample], axis=0)
+df_under.to_csv(f"Data/{file_tag}_under.csv", index=False)
+
+print("Minority class=", positive_class, ":", len(df_positives))
+print("Majority class=", negative_class, ":", len(df_neg_sample))
+print("Proportion:", round(len(df_positives) / len(df_neg_sample), 2), ": 1")
 
 #
 #"""SMOTE"""

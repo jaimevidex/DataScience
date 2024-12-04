@@ -85,6 +85,11 @@ monthly_val:dict[int, float] = {
     12: -pi/6
 }
 
+class_val: dict[str, int] = {
+    "NY": 0,
+    "nonNY": 1
+}
+
 def encode_cyclic_variables(data: DataFrame, vars: list[str]) -> None:
     for v in vars:
         x_max: float | int = max(data[v])
@@ -94,13 +99,40 @@ def encode_cyclic_variables(data: DataFrame, vars: list[str]) -> None:
 
 
 data['ARREST_MONTH'] = data['ARREST_DATE'].dt.month
+data['CLASS'] = data['JURISDICTION_CODE'].apply(lambda x: 'NY' if x < 3 else 'nonNY') 
+data['LAW_CODE_PRE'] = data['LAW_CODE'].str[:3]
+label_encoder_pre = LabelEncoder()
+
+# Function to process the remaining part of 'LAW_CODE'
+def process_law_code(code):
+    remaining = code[3:]
+    if remaining.startswith('0'):
+        if remaining[1] == '0':
+            return f"{remaining[2:]}"
+        else:
+            return f"{remaining[1:]}.e{remaining[0]}"
+    else:
+        return f"{remaining[:3]}.{remaining[3:]}"
+
+# Apply the function to create a new column 'LAW_CODE_REMAINING'
+data['LAW_CODE_REMAINING'] = data['LAW_CODE'].apply(process_law_code)
+
+data['LAW_CODE_PRE'] = label_encoder_pre.fit_transform(data['LAW_CODE_PRE']) + 1
+
+# Function to process the remaining part of 'LAW_CODE'
+
+label_encoder_remaining = LabelEncoder()
+data['LAW_CODE_REMAINING'] = label_encoder_remaining.fit_transform(data['LAW_CODE_REMAINING']) + 1
+
+
 
 encoding: dict[str, dict[str, int]] = {
     "LAW_CAT_CD": felony_misdemeanor,
     "PERP_SEX": male_female,
     "ARREST_BORO": arrest_boro,
     "AGE_GROUP": age_group,
-    "ARREST_MONTH": monthly_val
+    "ARREST_MONTH": monthly_val,
+    "CLASS": class_val
 }
 
 
@@ -118,20 +150,11 @@ df = df.drop(columns=['ARREST_DATE'])
 """
 Delete columns as directly correlated with other variables
 """
-df = df.drop(columns=['PD_DESC', 'OFNS_DESC'])
+df = df.drop(columns=['PD_DESC', 'OFNS_DESC','LAW_CODE'])
 
 """
 Turn the LAW_CAT_CD into a discrete variable
 """
 df['LAW_CAT_CD'] = df['LAW_CAT_CD'].astype('category')
-
-"""
-Label encoding
-"""
-# Assuming df is your DataFrame and 'LAW_CODE' is the column to encode
-label_encoder = LabelEncoder()
-df['LAW_CODE'] = label_encoder.fit_transform(df['LAW_CODE'])
-
-#print(df['LAW_CODE'])
 
 df.to_csv(f"./Data/{file_tag}_encoding.csv", index=True)

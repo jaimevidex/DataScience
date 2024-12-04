@@ -8,7 +8,7 @@ from numpy import ndarray, log
 
 
 file_tag = "class_ny_arrests"
-filename = f"Data/{file_tag}_missing_values_method1.csv"
+filename = f"Data/missing_values/{file_tag}_missing_values_method1.csv"
 data: DataFrame = read_csv(filename, na_values="", index_col="ARREST_KEY")
 print(f"Original data: {data.shape}")
 
@@ -17,7 +17,7 @@ NR_STDEV: list [int] = [3,2,2,2,2,3,2,2,5,8,8,5,2,2,4]
 
 numeric_vars: list[str] = get_variable_types(data)["numeric"]
 print(f"Numeric variables: {numeric_vars}")
-#'''
+'''
 print("Boxplots")
 if [] != numeric_vars:
     rows: int
@@ -126,7 +126,7 @@ if [] != numeric_vars:
     #show()
 else:
     print("There are no numeric variables.")
-#'''
+'''
 
 if numeric_vars is not None:
     df: DataFrame = data.copy(deep=True)
@@ -142,6 +142,20 @@ if numeric_vars is not None:
         df.drop(outliers.index, axis=0, inplace=True)
     df.to_csv(f"./Data/{file_tag}_drop_outliers.csv", index=True)
     print(f"Data after dropping outliers: {df.shape}")
+else:
+    print("There are no numeric variables")
+    
+if [] != numeric_vars:
+    df: DataFrame = data.copy(deep=True)
+    for var in numeric_vars:
+        if var == "JURISDICTION_CODE" or var == "Y_COORD_CD" or var == "Latitude" or var == "KY_CD" or var == "ARREST_MONTH":
+            continue
+        top, bottom = determine_outlier_thresholds_for_var(summary5[var], std_based=True, threshold=NR_STDEV[numeric_vars.index(var)])
+        median: float = df[var].median()
+        df[var] = df[var].apply(lambda x: median if x > top or x < bottom else x)
+    df.to_csv(f"data/{file_tag}_replacing_outliers.csv", index=True)
+    print("Data after replacing outliers:", df.shape)
+    print(df.describe())
 else:
     print("There are no numeric variables")
 

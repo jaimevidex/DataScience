@@ -7,7 +7,7 @@ from numpy import ndarray
 
 method_tag = "encoding"
 file_tag = "class_ny_arrests"
-filename = f"Data/{method_tag}/{file_tag}_{method_tag}.csv"
+filename = f"Data/{file_tag}_{method_tag}.csv"
 data: DataFrame = read_csv(filename, na_values="", index_col="ARREST_KEY")
 print(f"Original data: {data.shape}")
 
@@ -52,7 +52,7 @@ data_no_missing_values = pd.concat([data_no_missing_values, missing_values])
 print(f"Data after recovering missing values: {data_no_missing_values.shape}")
 
 # Save the data with missing values recovered
-data_no_missing_values.to_csv(f"./Data/{file_tag}_missing_values_method1.csv", index=True)
+data_no_missing_values.to_csv(f"./Data/{file_tag}_missing_values_method1.csv")
 
 
 def mvi_by_filling(data: DataFrame, strategy: str = "frequent") -> DataFrame:
@@ -96,5 +96,5 @@ def mvi_by_filling(data: DataFrame, strategy: str = "frequent") -> DataFrame:
 
 data_filled: DataFrame = mvi_by_filling(data_no_missing_values, "frequent")
 print(f"Data after filling missing values: {data_filled.shape}")
-data_filled.to_csv(f"./Data/{file_tag}_missing_values_method2.csv", index=True)
+data_filled.to_csv(f"./Data/{file_tag}_missing_values_method2.csv")
 

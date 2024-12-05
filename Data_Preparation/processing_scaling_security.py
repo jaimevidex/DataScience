@@ -6,10 +6,10 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from matplotlib.pyplot import savefig, subplots, show
 
 file_tag = "class_ny_arrests"
-filename = f"Data/replacing_outliers/{file_tag}_drop_outliers.csv"
+filename = f"Data/{file_tag}_replacing_outliers.csv"
 data: DataFrame = read_csv(filename, na_values="", index_col=None)
 print(f"Original data: {data.shape}")
-target = "LAW_CAT_CD"
+target = "CLASS"
 vars: list[str] = data.columns.to_list()
 target_data: Series = data.pop(target)
 

@@ -8,12 +8,12 @@ from numpy import ndarray, log
 
 
 file_tag = "class_ny_arrests"
-filename = f"Data/missing_values/{file_tag}_missing_values_method1.csv"
+filename = f"Data/{file_tag}_missing_values_method1.csv"
 data: DataFrame = read_csv(filename, na_values="", index_col="ARREST_KEY")
 print(f"Original data: {data.shape}")
 
-IQR_FACTOR: float = [1.5,1.5,1.5,1.5,1.5,2.0,1.5,1.5,3.7,8.5,8.5,3.6,1.5,1.5,1.5]
-NR_STDEV: list [int] = [3,2,2,2,2,3,2,2,5,8,8,5,2,2,4]
+IQR_FACTOR: float = [1.5,1.5,1.5,2.0,1.5,1.5,3.7,8.5,8.5,3.6,1.5,1.5,1.5,1.5,1.5]
+NR_STDEV: list [int] = [2,2,2,3,2,2,5,8,8,5,2,2,2,2,4]
 
 numeric_vars: list[str] = get_variable_types(data)["numeric"]
 print(f"Numeric variables: {numeric_vars}")
@@ -133,7 +133,7 @@ if numeric_vars is not None:
     summary5: DataFrame = data[numeric_vars].describe()
     for var in numeric_vars:
         #skip column 4
-        if var == "JURISDICTION_CODE" or var == "Y_COORD_CD" or var == "Latitude" or var == "KY_CD":
+        if var == "JURISDICTION_CODE" or var == "Y_COORD_CD" or var == "Latitude" or var == "KY_CD" or var == "LAW_CODE_PRE" or var == "LAW_CODE_REMAINING":
             continue
         top_threshold, bottom_threshold = determine_outlier_thresholds_for_var(
             summary5[var], std_based=True, threshold=NR_STDEV[numeric_vars.index(var)]

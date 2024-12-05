@@ -6,8 +6,8 @@ from pandas import Series
 from imblearn.over_sampling import SMOTE
 
 file_tag = "class_ny_arrests"
-filename = f"Data/train_{file_tag}_scaled_zscore.csv"
-target = "LAW_CAT_CD"
+filename = f"Data/Scaling/train_{file_tag}_scaled_zscore_run6.csv"
+target = "CLASS"
 original: DataFrame = read_csv(filename, sep=",", decimal=".")
 
 target_count: Series = original[target].value_counts()

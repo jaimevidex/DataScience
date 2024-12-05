@@ -7,7 +7,7 @@ from imblearn.over_sampling import SMOTE
 from joblib import Parallel, delayed
 
 DELTA_IMPROVE: float = 0.001
-method_tag = "smote"
+method_tag = "scaled_zscore"
 file_tag = "class_ny_arrests"
 
 DELTA_IMPROVE: float = 0.001
@@ -52,15 +52,26 @@ def evaluate_approach(
             eval[met] = [eval_NB[met], eval_KNN[met]]
     return eval
 
+#for i in range(0, 10):
+#    print("Testing run number:", i)
+#    train: DataFrame = read_csv(f"Data/Scaling/MinMax/train_{file_tag}_{method_tag}_run{i}.csv")
+#    test: DataFrame = read_csv(f"Data/Scaling/MinMax/test_{file_tag}_{method_tag}_run{i}.csv")
+#    figure()
+#    eval: dict[str, list] = evaluate_approach(train, test, target="CLASS", metric="recall")
+#    plot_multibar_chart(
+#        ["NB", "KNN"], eval, title=f"{file_tag} evaluation", percentage=True
+#    )
+#    savefig(f"./{file_tag}_eval_{method_tag}_run{i}.png")
+#    show()
 filename = "Data/class_ny_arrests.csv"
 file_tag = "class_ny_arrests"
-train: DataFrame = read_csv(f"Data/{file_tag}_{method_tag}.csv")
-test: DataFrame = read_csv(f"Data/test_{file_tag}_scaled_zscore.csv")
+train: DataFrame = read_csv(f"Data/{file_tag}_oversampling.csv")
+test: DataFrame = read_csv(f"Data/Scaling/test_{file_tag}_{method_tag}_run6.csv")
 
 figure()
-eval: dict[str, list] = evaluate_approach(train, test, target="LAW_CAT_CD", metric="recall")
+eval: dict[str, list] = evaluate_approach(train, test, target="CLASS", metric="recall")
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"{file_tag} evaluation", percentage=True
 )
-savefig(f"./{file_tag}_eval_{method_tag}.png")
+savefig(f"./{file_tag}_eval_oversampling.png")
 show()

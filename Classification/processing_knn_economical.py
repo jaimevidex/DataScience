@@ -39,8 +39,8 @@ def knn_study(
 
 target = "CLASS"
 file_tag = "class_financial_distress"
-train_filename = "Data/class_financial_distress/balancing/train_data_smote_economical.csv"
-test_filename = "Data/class_financial_distress/balancing/test_data_smote_economical.csv"
+train_filename = "Data/class_financial_distress/Classification/train_class_financial_distress_smote.csv"
+test_filename = "Data/class_financial_distress/Classification/test_class_financial_distress_smote.csv"
 eval_metric = "accuracy"
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(train_filename, test_filename, target)

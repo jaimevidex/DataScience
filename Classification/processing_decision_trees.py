@@ -43,8 +43,8 @@ def trees_study(
 
 target = "CLASS"
 file_tag = "class_financial_distress"
-train_filename = "Data/class_financial_distress/balancing/train_data_smote_economical.csv"
-test_filename = "Data/class_financial_distress/balancing/test_data_smote_economical.csv"
+train_filename = "Data/class_financial_distress/Classification/train_class_financial_distress_smote.csv"
+test_filename = "Data/class_financial_distress/Classification/test_class_financial_distress_smote.csv"
 eval_metric = "accuracy"
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(train_filename, test_filename, target)
@@ -53,17 +53,17 @@ print(f'Labels={labels}')
 
 figure()
 best_model, params = trees_study(trnX, trnY, tstX, tstY, d_max=25, metric=eval_metric)
-savefig(f'Classification/Images/{file_tag}_dt_{eval_metric}_study.png')
+savefig(f'Classification/Images/Decision Tree/{file_tag}_dt_{eval_metric}_study.png')
 """show()"""
 
 prd_trn: array = best_model.predict(trnX)
 prd_tst: array = best_model.predict(tstX)
 figure()
 plot_evaluation_results(params, trnY, prd_trn, tstY, prd_tst, labels)
-savefig(f'Classification/Images/{file_tag}_dt_{params["name"]}_best_{params["metric"]}_eval.png')
+savefig(f'Classification/Images/Decision Tree/{file_tag}_dt_{params["name"]}_best_{params["metric"]}_eval.png')
 """show()"""
 
-tree_filename: str = f"Classification/Images/{file_tag}_dt_{eval_metric}_best_tree"
+tree_filename: str = f"Classification/Images/Decision Tree/{file_tag}_dt_{eval_metric}_best_tree"
 max_depth2show = 3
 st_labels: list[str] = [str(value) for value in labels]
 
@@ -103,7 +103,6 @@ plot_tree(
 )
 savefig(tree_filename + ".png")
 
-
 importances = best_model.feature_importances_
 indices: list[int] = argsort(importances)[::-1]
 elems: list[str] = []
@@ -122,7 +121,7 @@ plot_horizontal_bar_chart(
     ylabel="variables",
     percentage=True,
 )
-savefig(f"Classification/Images/{file_tag}_dt_{eval_metric}_vars_ranking.png")
+savefig(f"Classification/Images/Decision Tree/{file_tag}_dt_{eval_metric}_vars_ranking.png")
 
 crit: Literal["entropy", "gini"] = params["params"][0]
 d_max = 25
@@ -147,4 +146,4 @@ plot_multiline_chart(
     ylabel=str(eval_metric),
     percentage=True,
 )
-savefig(f"Classification/Images/{file_tag}_dt_{eval_metric}_overfitting.png")
+savefig(f"Classification/Images/Decision Tree/{file_tag}_dt_{eval_metric}_overfitting.png")

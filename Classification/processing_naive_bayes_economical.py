@@ -7,8 +7,8 @@ from dslabs_functions import plot_evaluation_results
 
 target = "CLASS"
 file_tag = "class_financial_distress"
-train_filename = "Data/class_financial_distress/balancing/train_data_smote_economical.csv"
-test_filename = "Data/class_financial_distress/balancing/test_data_smote_economical.csv"
+train_filename = "Data/class_financial_distress/Classification/train_class_financial_distress_smote.csv"
+test_filename = "Data/class_financial_distress/Classification/test_class_financial_distress_smote.csv"
 eval_metric = "accuracy"
 
 

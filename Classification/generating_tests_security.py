@@ -7,6 +7,12 @@ file_tag = "class_ny_arrests"
 filename = f"Data/{file_tag}_{method_tag}.csv"  # Replace with your dataset's filename
 data = pd.read_csv(filename)
 
+# Drop the JURISDICTION_CODE column
+data = data.drop(columns=["JURISDICTION_CODE"])
+
+# Get only 10% of the data
+data = data.sample(frac=0.05, random_state=42)
+
 # Split the data into 80% and 20%
 train_data, test_data = train_test_split(data, test_size=0.3, random_state=42)
 

@@ -57,17 +57,22 @@ def naive_Bayes_study(
 
 figure()
 best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, eval_metric)
-savefig(f"Classification/Images/{file_tag}_nb_{eval_metric}_study.png")
+#savefig(f"Classification/Images/{file_tag}_nb_{eval_metric}_study.png")
 """show()"""
 
 figure()
 best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, "recall")
-savefig(f"Classification/Images/{file_tag}_nb_recall_study.png")
+#savefig(f"Classification/Images/{file_tag}_nb_recall_study.png")
 """show()"""
+
+figure()
+best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, "precision")
+savefig(f"Classification/Images/NB/{file_tag}_nb_precision_study.png")
+show()
 
 prd_trn: array = best_model.predict(trnX)
 prd_tst: array = best_model.predict(tstX)
 figure()
 plot_evaluation_results(params, trnY, prd_trn, tstY, prd_tst, labels)
-savefig(f'Classification/Images/{file_tag}_{params["name"]}_best_{params["metric"]}_eval.png')
-show()
+#savefig(f'Classification/Images/{file_tag}_{params["name"]}_best_{params["metric"]}_eval.png')
+#show()

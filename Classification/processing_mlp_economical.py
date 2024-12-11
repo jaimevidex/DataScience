@@ -83,10 +83,9 @@ def mlp_study(
 
     return best_model, best_params
 
-
 file_tag = "class_financial_distress"
-train_filename = "Data/class_financial_distress/Classification/train_class_financial_distress_smote.csv"
-test_filename = "Data/class_financial_distress/Classification/test_class_financial_distress_smote.csv"
+train_filename = "Data/train_class_financial_distress_smote.csv"
+test_filename = "Data/test_class_financial_distress_smote.csv"
 target = "CLASS"
 eval_metric = "accuracy"
 

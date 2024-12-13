@@ -89,14 +89,14 @@ best_model, params = gradient_boosting_study(
     metric=eval_metric,
 )
 savefig(f"Classification/Images/GB/{file_tag}_gb_{eval_metric}_study.png")
-#show()
+show()
 
 prd_trn: array = best_model.predict(trnX)
 prd_tst: array = best_model.predict(tstX)
 figure()
 plot_evaluation_results(params, trnY, prd_trn, tstY, prd_tst, labels)
 savefig(f'Classification/Images/GB/{file_tag}_gb_{params["name"]}_best_{params["metric"]}_eval.png')
-#show()
+show()
 
 
 trees_importances: list[float] = []
@@ -125,3 +125,30 @@ plot_horizontal_bar_chart(
     percentage=True,
 )
 savefig(f"Classification/Images/GB/{file_tag}_gb_{eval_metric}_vars_ranking.png")
+
+d_max: int = params["params"][0]
+lr: float = params["params"][1]
+nr_estimators: list[int] = [i for i in range(2, 2501, 500)]
+
+y_tst_values: list[float] = []
+y_trn_values: list[float] = []
+acc_metric: str = "accuracy"
+
+for n in nr_estimators:
+    clf = GradientBoostingClassifier(n_estimators=n, max_depth=d_max, learning_rate=lr)
+    clf.fit(trnX, trnY)
+    prd_tst_Y: array = clf.predict(tstX)
+    prd_trn_Y: array = clf.predict(trnX)
+    y_tst_values.append(CLASS_EVAL_METRICS[acc_metric](tstY, prd_tst_Y))
+    y_trn_values.append(CLASS_EVAL_METRICS[acc_metric](trnY, prd_trn_Y))
+
+figure()
+plot_multiline_chart(
+    nr_estimators,
+    {"Train": y_trn_values, "Test": y_tst_values},
+    title=f"GB overfitting study for d={d_max} and lr={lr}",
+    xlabel="nr_estimators",
+    ylabel=str(eval_metric),
+    percentage=True,
+)
+savefig(f"Classification/Images/GB/{file_tag}_gb_{eval_metric}_overfitting.png")

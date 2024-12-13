@@ -85,7 +85,7 @@ def mlp_study(
 
 
 file_tag = "class_ny_arrests"
-train_filename = f"Data/train_{file_tag}_scaled_zscore.csv"
+train_filename = f"Data/{file_tag}_smote.csv"
 test_filename = f"Data/test_{file_tag}_scaled_zscore.csv"
 target = "CLASS"
 eval_metric = "accuracy"

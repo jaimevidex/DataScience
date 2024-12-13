@@ -5,7 +5,10 @@ from sklearn.model_selection import train_test_split
 method_tag = "scaled_zscore" 
 file_tag = "class_ny_arrests"
 filename = f"Data/{file_tag}_{method_tag}.csv"  # Replace with your dataset's filename
-data = pd.read_csv(filename, na_values="", index_col="ARREST_KEY")
+data = pd.read_csv(filename, na_values="", index_col=None)
+
+#drop column JURISDICTION_CODE
+data = data.drop(columns=["JURISDICTION_CODE"])
 
 #for i in range(0, 10):
 #   print("Generating split number:", i)
@@ -31,7 +34,7 @@ data = pd.read_csv(filename, na_values="", index_col="ARREST_KEY")
     #
     #data.to_csv(filename, index=False)
     
-to_keep = data.sample(frac = 0.2)
+to_keep = data.sample(frac = 0.05)
 
 train_data, test_data = train_test_split(to_keep, test_size=0.3, random_state=42)
 

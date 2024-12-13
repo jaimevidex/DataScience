@@ -26,65 +26,69 @@ file_tag = "class_ny_arrests"
 train: DataFrame = read_csv(f"Data/train_{file_tag}_scaled_zscore.csv")
 
 print("Original variables", train.columns.to_list())
+print("Number of variables", len(train.columns))
 vars2drop: list[str] = select_low_variance_variables(train, 1, target=target)
 print("Variables to drop", vars2drop)
+print("Number of variables to drop", len(vars2drop))
 
+# Feature selection using low variance
 
-def study_variance_for_feature_selection(
-    train: DataFrame,
-    test: DataFrame,
-    target: str = "class",
-    max_threshold: float = 1,
-    lag: float = 0.05,
-    metric: str = "accuracy",
-    file_tag: str = "",
-) -> dict:
-    options: list[float] = [
-        round(i * lag, 3) for i in range(1, ceil(max_threshold / lag + lag))
-    ]
-    results: dict[str, list] = {"NB": [], "KNN": []}
-    summary5: DataFrame = train.describe()
-    for thresh in options:
-        vars2drop: Index[str] = summary5.columns[
-            summary5.loc["std"] * summary5.loc["std"] < thresh
-        ]
-        vars2drop = vars2drop.drop(target) if target in vars2drop else vars2drop
-
-        train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
-        test_copy: DataFrame = test.drop(vars2drop, axis=1, inplace=False)
-        eval: dict[str, list] | None = evaluate_approach(
-            train_copy, test_copy, target=target, metric=metric
-        )
-        if eval is not None:
-            results["NB"].append(eval[metric][0])
-            results["KNN"].append(eval[metric][1])
-
-    plot_multiline_chart(
-        options,
-        results,
-        title=f"{file_tag} variance study ({metric})",
-        xlabel="variance threshold",
-        ylabel=metric,
-        percentage=True,
-    )
-    savefig(f"Feature_Engineering/Images/{file_tag}_fs_low_var_{metric}_study.png")
-    return results
-
-
-eval_metric = "recall"
+#def study_variance_for_feature_selection(
+#    train: DataFrame,
+#    test: DataFrame,
+#    target: str = "class",
+#    max_threshold: float = 1,
+#    lag: float = 0.05,
+#    metric: str = "accuracy",
+#    file_tag: str = "",
+#) -> dict:
+#    options: list[float] = [
+#        round(i * lag, 3) for i in range(1, ceil(max_threshold / lag + lag))
+#    ]
+#    results: dict[str, list] = {"NB": [], "KNN": []}
+#    summary5: DataFrame = train.describe()
+#    for thresh in options:
+#        vars2drop: Index[str] = summary5.columns[
+#            summary5.loc["std"] * summary5.loc["std"] < thresh
+#        ]
+#        vars2drop = vars2drop.drop(target) if target in vars2drop else vars2drop
+#
+#        train_copy: DataFrame = train.drop(vars2drop, axis=1, inplace=False)
+#        test_copy: DataFrame = test.drop(vars2drop, axis=1, inplace=False)
+#        
+#        eval: dict[str, list] | None = evaluate_approach(
+#            train_copy, test_copy, target=target, metric=metric
+#        )
+#        if eval is not None:
+#            results["NB"].append(eval[metric][0])
+#            results["KNN"].append(eval[metric][1])
+#
+#    plot_multiline_chart(
+#        options,
+#        results,
+#        title=f"{file_tag} variance study ({metric})",
+#        xlabel="variance threshold",
+#        ylabel=metric,
+#        percentage=True,
+#    )
+#    savefig(f"Feature_Engineering/Images/{file_tag}_fs_low_var_{metric}_study.png")
+#    return results
+#
+#
+#eval_metric = "recall"
 test: DataFrame = read_csv(f"Data/test_{file_tag}_scaled_zscore.csv")
-
-figure(figsize=(2 * HEIGHT/2, HEIGHT/2))
-study_variance_for_feature_selection(
-    train,
-    test,
-    target=target,
-    max_threshold=3,
-    lag=0.1,
-    metric=eval_metric,
-    file_tag=file_tag,
-)
-show()
+#
+#figure(figsize=(2 * HEIGHT/2, HEIGHT/2))
+#study_variance_for_feature_selection(
+#    train,
+#    test,
+#    target=target,
+#    max_threshold=1,
+#    lag=0.1,
+#    metric=eval_metric,
+#    file_tag=file_tag,
+#)
+#show()
 
 def apply_feature_selection(
     train: DataFrame,
@@ -99,12 +103,13 @@ def apply_feature_selection(
     test_copy.to_csv(f"{filename}_test_{tag}.csv", index=True)
     return train_copy, test_copy
 
-train_cp, test_cp = apply_feature_selection(
-    train, test, vars2drop, filename=f"Data/{file_tag}", tag="lowvar"
-)
-print(f"Original data: train={train.shape}, test={test.shape}")
-print(f"After low variance FS: train_cp={train_cp.shape}, test_cp={test_cp.shape}")
+#train_cp, test_cp = apply_feature_selection(
+#    train, test, vars2drop, filename=f"Data/{file_tag}", tag="lowvar"
+#)
+#print(f"Original data: train={train.shape}, test={test.shape}")
+#print(f"After low variance FS: train_cp={train_cp.shape}, test_cp={test_cp.shape}")
 
+# Redundant features
 
 def select_redundant_variables(
     data: DataFrame, min_threshold: float = 0.90, target: str = "class"
@@ -126,7 +131,7 @@ def select_redundant_variables(
 
 print("Original variables", train.columns.values)
 vars2drop: list[str] = select_redundant_variables(
-    train, target=target, min_threshold=0.5
+    train, target=target, min_threshold=1
 )
 print("Variables to drop", vars2drop)
 
@@ -182,25 +187,24 @@ def study_redundancy_for_feature_selection(
 
 
 eval_metric = "recall"
-test: DataFrame = read_csv("Data/stroke_test.csv")
 
 figure(figsize=(2 * HEIGHT, HEIGHT))
 study_redundancy_for_feature_selection(
     train,
     test,
     target=target,
-    min_threshold=0.25,
+    min_threshold=1,
     lag=0.05,
     metric=eval_metric,
     file_tag=file_tag,
 )
 show()
 
-vars2drop: list[str] = select_redundant_variables(
-    train, min_threshold=0.5, target=target
-)
-train_cp, test_cp = apply_feature_selection(
-    train, test, vars2drop, filename=f"Data/{file_tag}", tag="redundant"
-)
-print(f"Original data: train={train.shape}, test={test.shape}")
-print(f"After redundant FS: train_cp={train_cp.shape}, test_cp={test_cp.shape}")
+#vars2drop: list[str] = select_redundant_variables(
+#    train, min_threshold=0.5, target=target
+#)
+#train_cp, test_cp = apply_feature_selection(
+#    train, test, vars2drop, filename=f"Data/{file_tag}", tag="redundant"
+#)
+#print(f"Original data: train={train.shape}, test={test.shape}")
+#print(f"After redundant FS: train_cp={train_cp.shape}, test_cp={test_cp.shape}")

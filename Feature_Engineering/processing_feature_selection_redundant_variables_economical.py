@@ -1,13 +1,13 @@
 from pandas import Series
 from pandas import DataFrame, Index, read_csv
-from Classification.dslabs_functions import (
+from dslabs_functions import (
     select_redundant_variables,
     study_redundancy_for_feature_selection,
      apply_feature_selection
 )
 from math import ceil
 from matplotlib.pyplot import savefig, show, figure
-from Classification.dslabs_functions import HEIGHT, evaluate_approach, plot_multiline_chart
+from dslabs_functions import HEIGHT, evaluate_approach, plot_multiline_chart
 
 
 target = "CLASS"

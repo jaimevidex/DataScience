@@ -25,8 +25,8 @@ def drop_column(input_file: str, output_file: str, column_to_drop: str) -> None:
 
 # Example usage
 if __name__ == "__main__":
-    input_path = "Data/test_class_financial_distress_smote.csv"        # Replace with your input file path
-    output_path = "Data/test_class_financial_distress_smote.csv"       # Replace with your desired output file path
+    input_path = "Data/train_class_financial_distress_smote.csv"        # Replace with your input file path
+    output_path = "Data/train_class_financial_distress_smote.csv"       # Replace with your desired output file path
     column_name = "Financial Distress" # Replace with the column name to drop
     
     drop_column(input_path, output_path, column_name)

@@ -32,6 +32,7 @@ def gradient_boosting_study(
     for i in range(len(max_depths)):
         d: int = max_depths[i]
         values = {}
+        print(f"GB max_depth={d}")
         for lr in learning_rates:
             y_tst_values: list[float] = []
             for n in n_estimators:
@@ -65,7 +66,7 @@ def gradient_boosting_study(
 
 
 file_tag = "class_ny_arrests"
-train_filename = f"Data/train_{file_tag}_scaled_zscore.csv"
+train_filename = f"Data/{file_tag}_smote.csv"
 test_filename = f"Data/test_{file_tag}_scaled_zscore.csv"
 target = "CLASS"
 eval_metric = "accuracy"

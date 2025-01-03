@@ -640,6 +640,29 @@ def run_NB(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]
     return eval
 
 
+def run_NB1(trnX, trnY, tstX, tstY, metric: str = "accuracy") -> dict[str, float]:
+    estimators: dict[str, GaussianNB | BernoulliNB] = {
+        "GaussianNB": GaussianNB(),
+        "BernoulliNB": BernoulliNB(),
+    }
+    best_model: GaussianNB | BernoulliNB = None  # type: ignore
+    best_performance: float = 0.0
+    eval: dict[str, float] = {}
+
+
+    for clf in estimators:
+        estimators[clf].fit(trnX, trnY)
+        prdY: ndarray = estimators[clf].predict(tstX)
+        performance: float = CLASS_EVAL_METRICS[metric](tstY, prdY)
+        if performance - best_performance > DELTA_IMPROVE:
+            best_performance = performance
+            best_model = estimators[clf]
+    if best_model is not None:
+        prd: ndarray = best_model.predict(tstX)
+        for key in CLASS_EVAL_METRICS:
+            eval[key] = CLASS_EVAL_METRICS[key](tstY, prd)
+    return eval
+
 def run_KNN(trnX, trnY, tstX, tstY, metric="accuracy") -> dict[str, float]:
     kvalues: list[int] = [1] + [i for i in range(5, 26, 5)]
     best_model: KNeighborsClassifier = None  # type: ignore
@@ -669,7 +692,14 @@ def evaluate_approach(
     tstX: ndarray = test.values
     eval: dict[str, list] = {}
 
-    eval_NB: dict[str, float] | None = run_NB(trnX, trnY, tstX, tstY, metric=metric)
+    try:
+        eval_NB: dict[str, float] | None = run_NB(trnX, trnY, tstX, tstY, metric=metric)
+    except Exception as e:
+        try:
+            eval_NB: dict[str, float] | None = run_NB1(trnX, trnY, tstX, tstY, metric=metric)
+        except Exception as e1:
+            eval_NB = {}
+
     eval_KNN: dict[str, float] | None = run_KNN(trnX, trnY, tstX, tstY, metric=metric)
     if eval_NB != {} and eval_KNN != {}:
         for met in CLASS_EVAL_METRICS:

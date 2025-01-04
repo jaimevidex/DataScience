@@ -34,7 +34,7 @@ plot_line_chart(
     ylabel=target,
     title=f"{file_tag} hourly {target}",
 )
-savefig(f"./Forecasting/Images/{file_tag}_beforescaling.png")
+savefig(f"./Forecasting/Images/Scaling/{file_tag}_beforescaling.png")
 
 df: DataFrame = scale_all_dataframe(data)
 
@@ -47,4 +47,4 @@ plot_line_chart(
     ylabel=target,
     title=f"{file_tag} {target} after scaling",
 )
-savefig(f"./Forecasting/Images/{file_tag}_afterscaling.png")
+savefig(f"./Forecasting/Images/Scaling/{file_tag}_afterscaling.png")

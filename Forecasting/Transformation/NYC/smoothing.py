@@ -28,7 +28,7 @@ plot_line_chart(
     ylabel=target,
     title=f"{file_tag} {target} after smoothing (size={WIN_SIZE})",
 )
-savefig(f"./Forecasting/Images/{file_tag}_aftersmoothing.png")
+savefig(f"./Forecasting/Images/Smoothing/{file_tag}_aftersmoothing.png")
 
 sizes: list[int] = [25, 50, 75, 100]
 fig: Figure
@@ -46,4 +46,4 @@ for i in range(len(sizes)):
         ylabel=target,
         title=f"size={sizes[i]}",
     )
-savefig(f"./Forecasting/Images/{file_tag}_smoothingvarioussizes.png")
+savefig(f"./Forecasting/Images/Smoothing/{file_tag}_smoothingvarioussizes.png")

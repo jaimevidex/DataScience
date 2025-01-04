@@ -4,13 +4,13 @@ from matplotlib.pyplot import subplots, savefig
 from dslabs_functions import PAST_COLOR, FUTURE_COLOR, PRED_PAST_COLOR, PRED_FUTURE_COLOR, HEIGHT
 from math import sqrt
 from dslabs_functions import plot_multibar_chart, FORECAST_MEASURES
-from sklearn.base import RegressorMixin
+from sklearn.base import RegressorMixin	
 from pandas import read_csv, DataFrame, Series
 
 def series_train_test_split(data: Series, trn_pct: float = 0.90) -> tuple[Series, Series]:
     trn_size: int = int(len(data) * trn_pct)
     df_cp: Series = data.copy()
-    train: Series = df_cp.iloc[:trn_size, :]
+    train: Series = df_cp.iloc[:trn_size]
     test: Series = df_cp.iloc[trn_size:]
     return train, test
 
@@ -68,9 +68,8 @@ class SimpleAvgRegressor(RegressorMixin):
         prd_series: Series = Series(prd)
         prd_series.index = X.index
         return prd_series
-    
 
-filename: str = "Data/Time_Series/forecast_gdp_europe.csv"
+filename: str = "Data/Time_Series/forecast_gdp_europe_no_nan.csv"
 file_tag: str = "forecast_gdp_europe"
 target: str = "GDP"
 timecol: str = "Year"
@@ -78,19 +77,16 @@ timecol: str = "Year"
 data: DataFrame = read_csv(filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
 series: Series = data[target]
 
-
-train, test = series_train_test_split(data, trn_pct=0.90)
+train, test = series_train_test_split(series, trn_pct=0.90)
 
 fr_mod = SimpleAvgRegressor()
 fr_mod.fit(train)
-prd_trn: Series = fr_mod.predict(train).dropna()
-prd_tst: Series = fr_mod.predict(test).dropna()
-
+prd_trn: Series = fr_mod.predict(train)
+prd_tst: Series = fr_mod.predict(test)
 
 plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Simple Average")
-savefig(f"Images/Evaluation/{file_tag}_simpleAvg_eval.png")
-
-
+savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_eval.png")
+	
 plot_forecasting_series(
     train,
     test,
@@ -99,4 +95,4 @@ plot_forecasting_series(
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Images/Evaluation/{file_tag}_simpleAvg_forecast.png")
+savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_forecast.png")

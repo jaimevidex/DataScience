@@ -5,23 +5,15 @@ from dslabs_functions import plot_line_chart, ts_aggregation_by, HEIGHT
 file_tag = "NYC"
 target = "Manhattan"
 data: DataFrame = read_csv(
-    "Data/forecast_ny_arrests.csv",
+    "Data/forecast_ny_arrests_smoothed.csv",
     index_col="Date",
-    sep=";",
+    sep=",",
     decimal=".",
     parse_dates=True,
     infer_datetime_format=True,
 )
 
 series: Series = data[target]
-figure(figsize=(3 * HEIGHT, HEIGHT / 2))
-plot_line_chart(
-    series.index.to_list(),
-    series.to_list(),
-    xlabel=series.index.name,
-    ylabel=target,
-    title=f"{file_tag} hourly {target}",
-)
 figure(figsize=(3 * HEIGHT, HEIGHT / 2))
 ss_agg: Series = ts_aggregation_by(series, gran_level="D", agg_func="sum")
 plot_line_chart(
@@ -32,14 +24,16 @@ plot_line_chart(
     title=f"{file_tag} daily {target}",
 )
 
-savefig(f"Forecasting/Images/Aggregation/{file_tag}_beforescaling.png")
+savefig(f"Forecasting/Images/Aggregation/{file_tag}_before_aggregation.png")
 
 from dslabs_functions import plot_ts_multivariate_chart
 
 plot_ts_multivariate_chart(data, title=f"{file_tag} {target}")
 
-agg_df: DataFrame = ts_aggregation_by(data, gran_level="W", agg_func="mean")
+agg_df: DataFrame = ts_aggregation_by(data, gran_level="M", agg_func="mean")
 
-plot_ts_multivariate_chart(agg_df, title=f"{file_tag} after hourly aggregation {target}")
+plot_ts_multivariate_chart(agg_df, title=f"{file_tag} after monthly aggregation {target}")
 
-savefig(f"Forecasting/Images/Aggregation/{file_tag}_afterscaling.png")
+savefig(f"Forecasting/Images/Aggregation/{file_tag}_after_aggregation.png")
+
+agg_df.to_csv("Data/forecast_ny_arrests_aggregated.csv")

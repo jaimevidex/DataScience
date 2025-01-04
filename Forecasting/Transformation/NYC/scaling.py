@@ -1,5 +1,5 @@
 from pandas import read_csv, DataFrame, Series
-from matplotlib.pyplot import figure, show, savefig
+from matplotlib.pyplot import figure, savefig
 from dslabs_functions import plot_line_chart, HEIGHT
 from sklearn.preprocessing import StandardScaler
 
@@ -14,7 +14,7 @@ def scale_all_dataframe(data: DataFrame) -> DataFrame:
 file_tag = "NYC"
 target = "Manhattan"
 data: DataFrame = read_csv(
-    "./Data/forecast_ny_arrests.csv",
+    "Data/forecast_ny_arrests.csv",
     index_col="Date",
     sep=";",
     decimal=".",
@@ -32,11 +32,13 @@ plot_line_chart(
     series.to_list(),
     xlabel=series.index.name,
     ylabel=target,
-    title=f"{file_tag} hourly {target}",
+    title=f"{file_tag} daily {target}",
 )
-savefig(f"./Forecasting/Images/Scaling/{file_tag}_beforescaling.png")
+savefig(f"Forecasting/Images/Scaling/{file_tag}_beforescaling.png")
 
 df: DataFrame = scale_all_dataframe(data)
+
+df.to_csv("Data/forecast_ny_arrests_scaled.csv")
 
 ss: Series = df[target]
 figure(figsize=(3 * HEIGHT, HEIGHT / 2))
@@ -47,4 +49,4 @@ plot_line_chart(
     ylabel=target,
     title=f"{file_tag} {target} after scaling",
 )
-savefig(f"./Forecasting/Images/Scaling/{file_tag}_afterscaling.png")
+savefig(f"Forecasting/Images/Scaling/{file_tag}_afterscaling.png")

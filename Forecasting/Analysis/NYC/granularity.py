@@ -6,9 +6,10 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
 file_tag = "NYC"
+gran = "Y"
 target = "Manhattan"
 data: DataFrame = read_csv(
-    "./forecast_ny_arrests.csv",
+    "Data/forecast_ny_arrests.csv",
     index_col="Date",
     sep=";",
     decimal=".",
@@ -40,7 +41,7 @@ def ts_aggregation_by(
     return df
 
 
-ss_days: Series = ts_aggregation_by(series, "D")
+ss_days: Series = ts_aggregation_by(series, gran)
 figure(figsize=(3 * HEIGHT, HEIGHT / 2))
 plot_line_chart(
     ss_days.index.to_list(),
@@ -49,9 +50,9 @@ plot_line_chart(
     ylabel=target,
     title=f"{file_tag} daily mean {target}",
 )
-savefig(f"./Forecasting/Images/Granularity/{file_tag}_aggregationbyD.png")
+savefig(f"Forecasting/Images/Granularity/{file_tag}_aggregationby{gran}.png")
 
-grans: list[str] = ["D", "W", "M"]
+grans: list[str] = ["D", "M", "Y"]
 fig: Figure
 axs: list[Axes]
 fig, axs = subplots(len(grans), 1, figsize=(3 * HEIGHT, HEIGHT / 2 * len(grans)))
@@ -67,4 +68,4 @@ for i in range(len(grans)):
         ylabel=target,
         title=f"granularity={grans[i]}",
     )
-savefig(f"./Forecasting/Images/Granularity/{file_tag}_multiaggregation.png")
+savefig(f"Forecasting/Images/Granularity/{file_tag}_multiaggregation.png")

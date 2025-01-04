@@ -3,13 +3,13 @@ from matplotlib.pyplot import figure, savefig
 from dslabs_functions import plot_line_chart, HEIGHT
 
 file_tag = "NYC"
-filename = "Data/forecast_ny_arrests.csv"
+filename = "Data/forecast_ny_arrests_aggregated.csv"
 index = "Date"
 target = "Manhattan"
 data: DataFrame = read_csv(
     filename,
     index_col=index,
-    sep=";",
+    sep=",",
     decimal=".",
     parse_dates=True,
     infer_datetime_format=True,
@@ -22,10 +22,10 @@ plot_line_chart(
     series.to_list(),
     xlabel=series.index.name,
     ylabel=target,
-    title=f"{file_tag} hourly {target}",
+    title=f"{file_tag} daily {target}",
 )
 
-savefig(f"Forecasting/Images/Differentiation/{file_tag}_hourly.png")
+savefig(f"Forecasting/Images/Differentiation/{file_tag}_daily.png")
 
 from dslabs_functions import plot_line_chart
 
@@ -53,3 +53,27 @@ diff_df: DataFrame = data.diff()
 plot_ts_multivariate_chart(diff_df, title=f"{file_tag} {target} - after first differentiation")
 
 savefig(f"Forecasting/Images/Differentiation/{file_tag}_after_first_diff.png")
+
+ss_diff2: Series = ss_diff.diff()
+
+figure(figsize=(3 * HEIGHT, HEIGHT))
+plot_line_chart(
+    ss_diff2.index.to_list(),
+    ss_diff2.to_list(),
+    title="Differentiation",
+    xlabel=series.index.name,
+    ylabel=target,
+)
+
+savefig(f"Forecasting/Images/Differentiation/{file_tag}_diff2.png")
+
+plot_ts_multivariate_chart(data, title=f"{file_tag} {target}")
+
+savefig(f"Forecasting/Images/Differentiation/{file_tag}_multivariate2.png")
+
+diff_df: DataFrame = data.diff().diff()
+
+plot_ts_multivariate_chart(diff_df, title=f"{file_tag} {target} - after second differentiation")
+
+savefig(f"Forecasting/Images/Differentiation/{file_tag}_after_second_diff.png")
+

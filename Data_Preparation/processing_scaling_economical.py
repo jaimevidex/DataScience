@@ -5,23 +5,26 @@ import pandas as pd
 from matplotlib.pyplot import subplots, show, savefig
 
 file = "class_financial_distress"
-filename = "./Data/class_financial_distress.csv"
+filename = "./Data/test_class_financial_distress.csv"
+filename_train = "./Data/train_class_financial_distress.csv"
 data: DataFrame = read_csv(filename, index_col=None, na_values="")
+data_train: DataFrame = read_csv(filename_train, index_col=None, na_values="")
 target = "CLASS"
 vars: list[str] = data.columns.to_list()
 target_data: Series = data.pop(target)
+target_data_train: Series = data_train.pop(target)
 
 
-transf: StandardScaler = StandardScaler(with_mean=True, with_std=True, copy=True).fit(data)
-df_zscore = DataFrame(transf.transform(data), columns=data.columns, index=data.index)
-df_zscore[target] = target_data
-df_zscore.to_csv(f"Data/{file}_scaled_zscore.csv", index=None)
+transf: StandardScaler = StandardScaler(with_mean=True, with_std=True, copy=True).fit(data_train)
+df_zscore = DataFrame(transf.transform(data_train), columns=data_train.columns, index=data_train.index)
+df_zscore[target] = target_data_train
+df_zscore.to_csv(f"Data/train_{file}_scaled_zscore.csv", index=None)
 
 
-transf: MinMaxScaler = MinMaxScaler(feature_range=(0, 1), copy=True).fit(data)
-df_minmax = DataFrame(transf.transform(data), columns=data.columns, index=data.index)
-df_minmax[target] = target_data
-df_minmax.to_csv(f"Data/{file}_scaled_minmax.csv", index=None)
+transf: MinMaxScaler = MinMaxScaler(feature_range=(0, 1), copy=True).fit(data_train)
+df_minmax = DataFrame(transf.transform(data_train), columns=data_train.columns, index=data_train.index)
+df_minmax[target] = target_data_train
+df_minmax.to_csv(f"Data/train_{file}_scaled_minmax.csv", index=None)
 
 
 

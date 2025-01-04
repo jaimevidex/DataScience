@@ -30,7 +30,7 @@ plot_line_chart(
     title=f"{file_tag} weekly {target}",
 )
 
-savefig(f"Forecasting/Images/{image_tag}_{file_tag}_weekly_{target}.png")
+savefig(f"Forecasting/Images/Distribution/{image_tag}_{file_tag}_weekly_{target}.png")
 
 fig: Figure
 axs: array
@@ -64,7 +64,7 @@ for i in range(len(grans)):
     set_chart_labels(axs[i], title=f"{gran_names[i]}", xlabel=target, ylabel="Nr records")
     axs[i].hist(grans[i].values)
 
-savefig(f"Forecasting/Images/{image_tag}_{file_tag}_histograms_{target}.png")
+savefig(f"Forecasting/Images/Distribution/{image_tag}_{file_tag}_histograms_{target}.png")
 
 
 def get_lagged_series(series: Series, max_lag: int, delta: int = 1):
@@ -78,7 +78,7 @@ figure(figsize=(3*HEIGHT, HEIGHT))
 lags = get_lagged_series(series, 20, 10)
 plot_multiline_chart(series.index.to_list(), lags, xlabel=index, ylabel=target)
 
-savefig(f"Forecasting/Images/{image_tag}_{file_tag}_lags_{target}.png")
+savefig(f"Forecasting/Images/Distribution/{image_tag}_{file_tag}_lags_{target}.png")
 
 
 def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
@@ -102,4 +102,4 @@ def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
 
 autocorrelation_study(series, 10, 1)
 
-savefig(f"Forecasting/Images/{image_tag}_{file_tag}_autocorrelation_{target}.png")
+savefig(f"Forecasting/Images/Distribution/{image_tag}_{file_tag}_autocorrelation_{target}.png")

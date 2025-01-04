@@ -28,7 +28,7 @@ plot_line_chart(
     ylabel=target,
     title=f"{file_tag} hourly {target}",
 )
-savefig(f"./Forecasting/Images/{file_tag}_univariate_timeseries.png")
+savefig(f"./Forecasting/Images/Dimensionality/{file_tag}_univariate_timeseries.png")
 
 def plot_ts_multivariate_chart(data: DataFrame, title: str) -> list[Axes]:
     fig: Figure
@@ -49,4 +49,4 @@ def plot_ts_multivariate_chart(data: DataFrame, title: str) -> list[Axes]:
 
 
 plot_ts_multivariate_chart(data, title=f"{file_tag} {target}")
-savefig(f"./Forecasting/Images/{file_tag}_multivariate_timeseries.png")
+savefig(f"./Forecasting/Images/Dimensionality/{file_tag}_multivariate_timeseries.png")

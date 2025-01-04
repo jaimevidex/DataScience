@@ -52,7 +52,7 @@ plot_components(
     y_label=target,
 )
 
-savefig(f"Forecasting/Images/{image_tag}_{file_tag}_components_{target}.png")
+savefig(f"Forecasting/Images/Stationarity/{image_tag}_{file_tag}_components_{target}.png")
 
 figure(figsize=(3 * HEIGHT, HEIGHT))
 plot_line_chart(
@@ -67,7 +67,7 @@ n: int = len(series)
 plot(series.index, [series.mean()] * n, "r-", label="mean")
 legend()
 
-savefig(f"Forecasting/Images/{image_tag}_{file_tag}_stationary_{target}.png")
+savefig(f"Forecasting/Images/Stationarity/{image_tag}_{file_tag}_stationary_{target}.png")
 
 BINS = 10
 mean_line: list[float] = []
@@ -92,7 +92,7 @@ n: int = len(series)
 plot(series.index, mean_line, "r-", label="mean")
 legend()
 
-savefig(f"Forecasting/Images/{image_tag}_{file_tag}_stationary_{target}_mean.png")
+savefig(f"Forecasting/Images/Stationarity/{image_tag}_{file_tag}_stationary_{target}_mean.png")
 
 from statsmodels.tsa.stattools import adfuller
 

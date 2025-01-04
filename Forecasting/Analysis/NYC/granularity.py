@@ -49,7 +49,7 @@ plot_line_chart(
     ylabel=target,
     title=f"{file_tag} daily mean {target}",
 )
-savefig(f"./Forecasting/Images/{file_tag}_aggregationbyD.png")
+savefig(f"./Forecasting/Images/Granularity/{file_tag}_aggregationbyD.png")
 
 grans: list[str] = ["D", "W", "M"]
 fig: Figure
@@ -67,4 +67,4 @@ for i in range(len(grans)):
         ylabel=target,
         title=f"granularity={grans[i]}",
     )
-savefig(f"./Forecasting/Images/{file_tag}_multiaggregation.png")
+savefig(f"./Forecasting/Images/Granularity/{file_tag}_multiaggregation.png")

@@ -1,21 +1,19 @@
 from pandas import read_csv, DataFrame, Series
 from statsmodels.tsa.holtwinters import SimpleExpSmoothing
-from dslabs_functions import series_train_test_split, HEIGHT
-from dslabs_functions import FORECAST_MEASURES, DELTA_IMPROVE, plot_line_chart
+from dslabs_functions import series_train_test_split, HEIGHT, FORECAST_MEASURES, DELTA_IMPROVE, plot_line_chart, plot_forecasting_series,plot_forecasting_eval
 from matplotlib.pyplot import savefig
-from dslabs_functions import plot_forecasting_eval
-from dslabs_functions import plot_forecasting_series
-
 
 filename: str = "Data/Time_Series/forecast_gdp_europe.csv"
 file_tag: str = "forecast_gdp_europe"
 target: str = "GDP"
 timecol: str = "Year"
-measure: str = "R2"
+measure: str = "MAPE"
 
 data: DataFrame = read_csv(filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
 series: Series = data[target]
 train, test = series_train_test_split(data, trn_pct=0.90)
+
+
 
 def exponential_smoothing_study(train: Series, test: Series, measure: str = "R2"):
     alpha_values = [i / 10 for i in range(1, 10)]
@@ -59,7 +57,6 @@ prd_tst = best_model.forecast(steps=len(test))
 
 plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Exponential Smoothing alpha={params[0]}")
 savefig(f"Forecasting/Images/Exponential_Smoothing/{file_tag}_exponential_smoothing_{measure}_eval.png")
-
 
 plot_forecasting_series(
     train,

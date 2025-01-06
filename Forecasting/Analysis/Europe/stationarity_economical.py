@@ -51,7 +51,7 @@ series: Series = data[target]
 
 plot_components(
     series,
-    title=f"{file_tag} hourly {target}",
+    title=f"{file_tag} yearly {target}",
     x_label=series.index.name,
     y_label=target,
 )

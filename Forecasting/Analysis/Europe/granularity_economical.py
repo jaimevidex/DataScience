@@ -24,13 +24,13 @@ plot_line_chart(
     series.to_list(),
     xlabel=series.index.name,
     ylabel=target,
-    title=f"{file_tag} hourly {target}",
+    title=f"{file_tag} yearly {target}",
 )
 #show()
 
 def ts_aggregation_by(
     data: Series | DataFrame,
-    gran_level: str = "D",
+    gran_level: str = "Y",
     agg_func: str = "mean",
 ) -> Series | DataFrame:
     df: Series | DataFrame = data.copy()
@@ -42,25 +42,28 @@ def ts_aggregation_by(
     return df
 
 
-ss_days: Series = ts_aggregation_by(series, "D")
+ss_year: Series = ts_aggregation_by(series, "Y")
 figure(figsize=(3 * HEIGHT, HEIGHT / 2))
 plot_line_chart(
-    ss_days.index.to_list(),
-    ss_days.to_list(),
-    xlabel="days",
+    ss_year.index.to_list(),
+    ss_year.to_list(),
+    xlabel="year",
     ylabel=target,
-    title=f"{file_tag} daily mean {target}",
+    title=f"{file_tag} yearly mean {target}",
 )
 #show()
 savefig(f"Forecasting/Images/{file_tag}_univariate_aggregation_study.png")
 
 study_tag = "granularity"
-grans: list[str] = ["D", "W", "M"]
+grans: list[str] = ["Y"]
 fig: Figure
 axs: list[Axes]
 fig, axs = subplots(len(grans), 1, figsize=(3 * HEIGHT, HEIGHT / 2 * len(grans)))
-fig.suptitle(f"{file_tag} {target} aggregation study")
+fig.suptitle(f" {target} aggregation study")
 
+if len(grans) == 1:
+    axs = [axs]
+    
 for i in range(len(grans)):
     ss: Series = ts_aggregation_by(series, grans[i])
     plot_line_chart(
@@ -69,7 +72,7 @@ for i in range(len(grans)):
         ax=axs[i],
         xlabel=f"{ss.index.name} ({grans[i]})",
         ylabel=target,
-        title=f"granularity={grans[i]}",
+        #title=f"granularity={grans[i]}",
     )
 #show()
 savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")

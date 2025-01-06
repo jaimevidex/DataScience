@@ -57,7 +57,7 @@ plot_components(
 )
 #show()
 study_tag = "Seasonality"
-savefig(f"Forecasting/Images/Stationary/{file_tag}_{study_tag}_study.png")
+savefig(f"Forecasting/Images/Stationarity/{file_tag}_{study_tag}_study.png")
 
 figure(figsize=(3 * HEIGHT, HEIGHT))
 plot_line_chart(
@@ -73,7 +73,7 @@ plot(series.index, [series.mean()] * n, "r-", label="mean")
 legend()
 #show()
 study_tag = "stationary1"
-savefig(f"Forecasting/Images/Stationary/{file_tag}_{study_tag}_study.png")
+savefig(f"Forecasting/Images/Stationarity/{file_tag}_{study_tag}_study.png")
 
 BINS = 10
 mean_line: list[float] = []
@@ -99,7 +99,7 @@ plot(series.index, mean_line, "r-", label="mean")
 legend()
 #show()
 study_tag = "stationary2"
-savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")
+savefig(f"Forecasting/Images/Stationarity/{file_tag}_{study_tag}_study.png")
 
 def eval_stationarity(series: Series) -> bool:
     result = adfuller(series)

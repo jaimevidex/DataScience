@@ -24,15 +24,15 @@ data: DataFrame = read_csv(
     infer_datetime_format=True,
 )
 series: Series = data[target]
-ss_weeks: Series = ts_aggregation_by(series, gran_level="W", agg_func=sum)
+ss_annual: Series = ts_aggregation_by(series, gran_level="Y", agg_func=sum)
 
 figure(figsize=(3 * HEIGHT, HEIGHT))
 plot_line_chart(
-    ss_weeks.index.to_list(),
-    ss_weeks.to_list(),
-    xlabel="weeks",
+    ss_annual.index.to_list(),
+    ss_annual.to_list(),
+    xlabel="Year",
     ylabel=target,
-    title=f"{file_tag} weekly {target}",
+    title=f"{file_tag} Annual {target}",
 )
 #show()
 study_tag = "time_series_aggregation_by"
@@ -40,33 +40,34 @@ savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")
 
 fig: Figure
 axs: array
-fig, axs = subplots(2, 2, figsize=(2 * HEIGHT, HEIGHT))
-set_chart_labels(axs[0, 0], title="HOURLY")
-axs[0, 0].boxplot(series)
-set_chart_labels(axs[0, 1], title="WEEKLY")
-axs[0, 1].boxplot(ss_weeks)
+fig, axs = subplots(2, 1, figsize=(HEIGHT, 2 * HEIGHT))
 
-axs[1, 0].grid(False)
-axs[1, 0].set_axis_off()
-axs[1, 0].text(0.2, 0, str(series.describe()), fontsize="small")
+# Boxplot on top
+set_chart_labels(axs[0], title="ANNUAL")
+axs[0].boxplot(ss_annual)
 
-axs[1, 1].grid(False)
-axs[1, 1].set_axis_off()
-axs[1, 1].text(0.2, 0, str(ss_weeks.describe()), fontsize="small")
-#show()
+# 5-Number Summary below
+axs[1].grid(False)
+axs[1].set_axis_off()
+
+# Add descriptive statistics as text
+summary_stats = str(ss_annual.describe())
+axs[1].text(0.5, 0.5, summary_stats, fontsize="small", ha="center", va="center", wrap=True)
+
+# Save the combined figure
 study_tag = "5-Number_Summary"
 savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")
 
-ss_days: Series = ts_aggregation_by(series, gran_level="D", agg_func=sum)
-ss_months: Series = ts_aggregation_by(series, gran_level="M", agg_func=sum)
-ss_quarters: Series = ts_aggregation_by(series, gran_level="Q", agg_func=sum)
 
-grans: list[Series] = [series, ss_days, ss_weeks, ss_months, ss_quarters]
-gran_names: list[str] = ["Horuly", "Daily", "Weekly", "Monthly", "Quarterly"]
+grans: list[Series] = [ss_annual]
+gran_names: list[str] = ["Annualy"]
 fig: Figure
 axs: array
 fig, axs = subplots(1, len(grans), figsize=(len(grans) * HEIGHT, HEIGHT))
 fig.suptitle(f"{file_tag} {target}")
+if len(grans) == 1:
+    axs = [axs]
+
 for i in range(len(grans)):
     set_chart_labels(axs[i], title=f"{gran_names[i]}", xlabel=target, ylabel="Nr records")
     axs[i].hist(grans[i].values)

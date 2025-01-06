@@ -8,7 +8,10 @@ def scale_all_dataframe(data: DataFrame) -> DataFrame:
     transf: StandardScaler = StandardScaler().fit(data)
     df = DataFrame(transf.transform(data), index=data.index)
     df.columns = vars
+    file_name = "forecast_gdp_europe_scalling.csv"
+    df.to_csv(file_name, index=True)
     return df
+
 
 file_tag = "forecast_gdp_europe"
 filename = "Data/Time_Series/forecast_gdp_europe.csv"

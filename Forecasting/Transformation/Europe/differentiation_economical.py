@@ -6,7 +6,7 @@ from dslabs_functions import plot_ts_multivariate_chart
 
 
 file_tag = "forecast_gdp_europe"
-filename = "Data/Time_Series/forecast_gdp_europe.csv"
+filename = "Data/Time_Series/forecast_gdp_europe_aggregated.csv"
 index = "Year"
 target = "GDP"
 data: DataFrame = read_csv(
@@ -46,12 +46,20 @@ savefig(f"Forecasting/Images/Differentiation/{file_tag}_{study_tag}_study.png")
 
 plot_ts_multivariate_chart(data, title=f"{file_tag} {target}")
 #show()
-study_tag = "Multivariate_Time_Series1"
+study_tag = "Multivariate_Time_Series"
 savefig(f"Forecasting/Images/Differentiation/{file_tag}_{study_tag}_study.png")
 
 diff_df: DataFrame = data.diff()
 
 plot_ts_multivariate_chart(diff_df, title=f"{file_tag} {target} - after first differentiation")
 #show()
-study_tag = "Multivariate_Time_Series2"
+study_tag = "first_differentiation"
+savefig(f"Forecasting/Images/Differentiation/{file_tag}_{study_tag}_study.png")
+
+
+diff_df: DataFrame = diff_df.diff()
+
+plot_ts_multivariate_chart(diff_df, title=f"{file_tag} {target} - after second differentiation")
+#show()
+study_tag = "second_differentiation"
 savefig(f"Forecasting/Images/Differentiation/{file_tag}_{study_tag}_study.png")

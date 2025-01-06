@@ -7,7 +7,7 @@ from dslabs_functions import plot_ts_multivariate_chart
 file_tag = "forecast_gdp_europe"
 target = "GDP"
 data: DataFrame = read_csv(
-    "Data/Time_Series/forecast_gdp_europe.csv",
+    "Data/Time_Series/forecast_gdp_europe_smoothing.csv",
     index_col="Year",
     sep=",",
     decimal=".",
@@ -34,7 +34,7 @@ plot_line_chart(
     title=f"{file_tag} daily {target}",
 )
 #show()
-study_tag = "ts_aggregation_by"
+study_tag = "before"
 savefig(f"Forecasting/Images/Aggregation/{file_tag}_{study_tag}_study.png")
 
 
@@ -44,5 +44,8 @@ agg_df: DataFrame = ts_aggregation_by(data, gran_level="W", agg_func="mean")
 
 plot_ts_multivariate_chart(agg_df, title=f"{file_tag} after hourly aggregation {target}")
 #show()
-study_tag = "Multivariate_Time_Series"
+study_tag = "after"
 savefig(f"Forecasting/Images/Aggregation/{file_tag}_{study_tag}_study.png")
+
+output_file = "Data/Time_Series/forecast_gdp_europe_aggregated.csv"
+agg_df.to_csv(output_file, sep=",", decimal=".", index=True)

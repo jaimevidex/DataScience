@@ -77,22 +77,26 @@ timecol: str = "Year"
 data: DataFrame = read_csv(filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
 series: Series = data[target]
 
-train, test = series_train_test_split(series, trn_pct=0.90)
+"""train, test = series_train_test_split(series, trn_pct=0.90)"""
+train: DataFrame = read_csv("Data/Time_Series/forecast_gdp_europe_no_nan_second_diff_test.csv", index_col="Year", sep=",", decimal=".", parse_dates=True)
+test: DataFrame = read_csv("Data/Time_Series/forecast_gdp_europe_no_nan_second_diff_train.csv", index_col="Year", sep=",", decimal=".", parse_dates=True)
 
+ss_test: Series= test[target]
+ss_train: Series=train[target]
 fr_mod = SimpleAvgRegressor()
-fr_mod.fit(train)
-prd_trn: Series = fr_mod.predict(train)
-prd_tst: Series = fr_mod.predict(test)
+fr_mod.fit(ss_train)
+prd_trn: Series = fr_mod.predict(ss_train)
+prd_tst: Series = fr_mod.predict(ss_test)
 
-plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Simple Average")
-savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_eval.png")
+plot_forecasting_eval(ss_train, ss_test, prd_trn, prd_tst, title=f"{file_tag} - Simple Average")
+savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_eval_aftersecondtdiff.png")
 	
 plot_forecasting_series(
-    train,
-    test,
+    ss_train,
+    ss_test,
     prd_tst,
     title=f"{file_tag} - Simple Average",
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_forecast.png")
+savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_forecast_afterseconddiff.png")

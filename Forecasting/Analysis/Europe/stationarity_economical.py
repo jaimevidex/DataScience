@@ -36,7 +36,7 @@ def plot_components(
     return axs
 
 file_tag = "forecast_gdp_europe"
-filename = "Data/Time_Series/forecast_gdp_europe.csv"
+filename = "Data/Time_Series/forecast_gdp_europe_no_nan.csv"
 index = "Year"
 target = "GDP"
 data: DataFrame = read_csv(

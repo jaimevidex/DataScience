@@ -12,7 +12,7 @@ from matplotlib.gridspec import GridSpec
 
 
 file_tag = "forecast_gdp_europe"
-filename = "Data/Time_Series/forecast_gdp_europe.csv"
+filename = "Data/Time_Series/forecast_gdp_europe_no_nan.csv"
 index = "Year"
 target = "GDP"
 data: DataFrame = read_csv(
@@ -36,7 +36,7 @@ plot_line_chart(
 )
 #show()
 study_tag = "time_series_aggregation_by"
-savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")
+savefig(f"Forecasting/Images/Distribution/{file_tag}_{study_tag}_study.png")
 
 fig: Figure
 axs: array
@@ -56,7 +56,7 @@ axs[1].text(0.5, 0.5, summary_stats, fontsize="small", ha="center", va="center",
 
 # Save the combined figure
 study_tag = "5-Number_Summary"
-savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")
+savefig(f"Forecasting/Images/Distribution/{file_tag}_{study_tag}_study.png")
 
 
 grans: list[Series] = [ss_annual]
@@ -73,7 +73,7 @@ for i in range(len(grans)):
     axs[i].hist(grans[i].values)
 #show()
 study_tag = "variables_distribution"
-savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")
+savefig(f"Forecasting/Images/Distribution/{file_tag}_{study_tag}_study.png")
 
 def get_lagged_series(series: Series, max_lag: int, delta: int = 1):
     lagged_series: dict = {"original": series, "lag 1": series.shift(1)}
@@ -86,7 +86,7 @@ figure(figsize=(3 * HEIGHT, HEIGHT))
 lags = get_lagged_series(series, 20, 10)
 plot_multiline_chart(series.index.to_list(), lags, xlabel=index, ylabel=target)
 study_tag = "lagged_series"
-savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")
+savefig(f"Forecasting/Images/Distribution/{file_tag}_{study_tag}_study.png")
 
 def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
     k: int = int(max_lag / delta)
@@ -109,4 +109,4 @@ def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
 
 autocorrelation_study(series, 10, 1)
 study_tag = "autocorrelation"
-savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")
+savefig(f"Forecasting/Images/Distribution/{file_tag}_{study_tag}_study.png")

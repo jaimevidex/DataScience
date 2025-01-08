@@ -8,7 +8,7 @@ from matplotlib.figure import Figure
 file_tag = "forecast_gdp_europe"
 target = "GDP"
 data: DataFrame = read_csv(
-    "Data/Time_Series/forecast_gdp_europe.csv",
+    "Data/Time_Series/forecast_gdp_europe_no_nan.csv",
     index_col="Year",
     sep=",",
     decimal=".",
@@ -29,7 +29,7 @@ plot_line_chart(
     title=f"{file_tag} hourly {target}",
 )
 #show()
-savefig(f"Forecasting/Images/{file_tag}_univariate_study.png")
+savefig(f"Forecasting/Images/Dimensionality/{file_tag}_univariate_study.png")
 
 def plot_ts_multivariate_chart(data: DataFrame, title: str) -> list[Axes]:
     fig: Figure
@@ -49,7 +49,7 @@ def plot_ts_multivariate_chart(data: DataFrame, title: str) -> list[Axes]:
     return axs
 
 data: DataFrame = read_csv(
-    "Data/Time_Series/forecast_gdp_europe.csv",
+    "Data/Time_Series/forecast_gdp_europe_no_nan.csv",
     index_col="Year",
     sep=",",
     decimal=".",
@@ -62,4 +62,4 @@ print("Last timestamp", data.index[-1])
 
 plot_ts_multivariate_chart(data, title=f"{file_tag} {target}")
 #show()
-savefig(f"Forecasting/Images/{file_tag}_multivariate_study.png")
+savefig(f"Forecasting/Images/Dimensionality/{file_tag}_multivariate_study.png")

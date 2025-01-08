@@ -59,6 +59,7 @@ plot_ts_multivariate_chart(data, title=f"{file_tag} {target}")
 savefig(f"Forecasting/Images/Differentiation/{file_tag}_multivariate.png")
 
 diff_df: DataFrame = data.diff()
+diff_df.to_csv("Data/Time_Series/forecast_gdp_europe_first_diff.csv", index=True)
 
 train, test = series_train_test_split(diff_df, trn_pct=0.90)
 test.to_csv("Data/Time_Series/forecast_gdp_europe_first_diff_test.csv", index=True)
@@ -86,6 +87,7 @@ plot_ts_multivariate_chart(data, title=f"{file_tag} {target}")
 savefig(f"Forecasting/Images/Differentiation/{file_tag}_multivariate2.png")
 
 diff_df: DataFrame = data.diff().diff()
+diff_df.to_csv("Data/Time_Series/forecast_gdp_europe_second_diff.csv", index=True)
 
 train, test = series_train_test_split(diff_df, trn_pct=0.90)
 test.to_csv("Data/Time_Series/forecast_gdp_europe_second_diff_test.csv", index=True)

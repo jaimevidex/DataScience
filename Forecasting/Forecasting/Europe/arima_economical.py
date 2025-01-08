@@ -6,7 +6,15 @@ from dslabs_functions import FORECAST_MEASURES, DELTA_IMPROVE, plot_multiline_ch
 from dslabs_functions import plot_forecasting_eval
 from dslabs_functions import plot_forecasting_series
 
-filename: str = "Data/Time_Series/forecast_gdp_europe.csv"
+from pandas import read_csv, DataFrame
+from statsmodels.tsa.api import VAR
+from dslabs_functions import series_train_test_split, HEIGHT
+from matplotlib.pyplot import figure, savefig, subplots
+from dslabs_functions import FORECAST_MEASURES, DELTA_IMPROVE, plot_multiline_chart
+from dslabs_functions import plot_forecasting_eval
+from dslabs_functions import plot_forecasting_series
+
+filename: str = "Data/Time_Series/forecast_gdp_europe_no_nan.csv"
 file_tag: str = "forecast_gdp_europe"
 target: str = "GDP"
 timecol: str = "Year"
@@ -72,7 +80,7 @@ prd_tst = best_model.forecast(steps=len(test))
 plot_forecasting_eval(
     train, test, prd_trn, prd_tst, title=f"{file_tag} - ARIMA (p={params[0]}, d={params[1]}, q={params[2]})"
 )
-savefig(f"Forecasting/Images/ARIMA/{file_tag}_arima_{measure}_eval.png")
+savefig(f"Forecasting/Images/ARIMA/{file_tag}_arima_{measure}_eval_second.png")
 
 
 plot_forecasting_series(
@@ -84,3 +92,4 @@ plot_forecasting_series(
     ylabel=target,
 )
 savefig(f"Forecasting/Images/ARIMA/{file_tag}_arima_{measure}_forecast.png")
+

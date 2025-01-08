@@ -6,7 +6,7 @@ from dslabs_functions import series_train_test_split, plot_forecasting_eval
 from dslabs_functions import plot_forecasting_series
 
 
-filename: str = "Data/Time_Series/forecast_gdp_europe.csv"
+filename: str = "Data/Time_Series/forecast_gdp_europe_no_nan_second_diff.csv"
 file_tag: str = "forecast_gdp_europe"
 target: str = "GDP"
 timecol: str = "Year"
@@ -27,7 +27,7 @@ prd_trn: Series = Series(model.predict(trnX), index=train.index)
 prd_tst: Series = Series(model.predict(tstX), index=test.index)
 
 plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Linear Regression")
-savefig(f"Forecasting/Images/Linear_Regression/{file_tag}_linear_regression_eval.png")
+savefig(f"Forecasting/Images/Linear_Regression/{file_tag}_linear_regression_eval_second_diff.png")
 
 
 plot_forecasting_series(
@@ -38,4 +38,4 @@ plot_forecasting_series(
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Forecasting/Images/Linear_Regression/{file_tag}_linear_regression_forecast.png")
+savefig(f"Forecasting/Images/Linear_Regression/{file_tag}_linear_regression_forecast_second_diff.png")

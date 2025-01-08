@@ -24,7 +24,7 @@ class PersistenceOptimistRegressor(RegressorMixin):
         return prd_series
     
 
-filename: str = "Data/Time_Series/forecast_gdp_europe.csv"
+filename: str = "Data/Time_Series/forecast_gdp_europe_no_nan_second_diff.csv"
 file_tag: str = "forecast_gdp_europe"
 target: str = "GDP"
 timecol: str = "Year"
@@ -40,7 +40,7 @@ prd_trn: Series = fr_mod.predict(train)
 prd_tst: Series = fr_mod.predict(test)
 
 plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Persistence Optimist")
-savefig(f"Forecasting/Images/Persistence/{file_tag}_persistence_optim_eval.png")
+savefig(f"Forecasting/Images/Persistence/{file_tag}_persistence_optim_eval_second_diff.png")
 
 plot_forecasting_series(
     train,
@@ -50,7 +50,7 @@ plot_forecasting_series(
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Forecasting/Images/Persistence/{file_tag}_persistence_optim_forecast.png")
+savefig(f"Forecasting/Images/Persistence/{file_tag}_persistence_optim_forecast_second_diff.png")
 
 class PersistenceRealistRegressor(RegressorMixin):
     def __init__(self):
@@ -80,7 +80,7 @@ prd_trn: Series = fr_mod.predict(train)
 prd_tst: Series = fr_mod.predict(test)
 
 plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Persistence Realist")
-savefig(f"Forecasting/Images/Persistence/{file_tag}_persistence_real_eval.png")
+savefig(f"Forecasting/Images/Persistence/{file_tag}_persistence_real_eval_second_diff.png")
 
 plot_forecasting_series(
     train,
@@ -90,4 +90,4 @@ plot_forecasting_series(
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Forecasting/Images/Persistence/{file_tag}_persistence_real_forecast.png")
+savefig(f"Forecasting/Images/Persistence/{file_tag}_persistence_real_forecast_second_diff.png")

@@ -61,7 +61,7 @@ def rolling_mean_study(train: Series, test: Series, measure: str = "R2"):
 
     return best_model, best_params
 
-filename: str = "Data/Time_Series/forecast_gdp_europe.csv"
+filename: str = "Data/Time_Series/forecast_gdp_europe_no_nan_second_diff.csv"
 file_tag: str = "forecast_gdp_europe"
 target: str = "GDP"
 timecol: str = "Year"
@@ -74,14 +74,14 @@ train, test = series_train_test_split(data, trn_pct=0.90)
 
 fig = figure(figsize=(HEIGHT, HEIGHT))
 best_model, best_params = rolling_mean_study(train, test)
-savefig(f"Forecasting/Images/Rolling_Mean/{file_tag}_rollingmean_{measure}_study.png")
+savefig(f"Forecasting/Images/Rolling_Mean/{file_tag}_rollingmean_{measure}_study_second_diff.png")
 
 params = best_params["params"]
 prd_trn: Series = best_model.predict(train)
 prd_tst: Series = best_model.predict(test)
 
 plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Rolling Mean (win={params[0]})")
-savefig(f"Forecasting/Images/Rolling_Mean/{file_tag}_rollingmean_{measure}_win{params[0]}_eval.png")
+savefig(f"Forecasting/Images/Rolling_Mean/{file_tag}_rollingmean_{measure}_win{params[0]}_eval_second_diff.png")
 
 plot_forecasting_series(
     train,
@@ -91,4 +91,4 @@ plot_forecasting_series(
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Forecasting/Images/Rolling_Mean/{file_tag}_rollingmean_{measure}_forecast.png")
+savefig(f"Forecasting/Images/Rolling_Mean/{file_tag}_rollingmean_{measure}_forecast_second_diff.png")

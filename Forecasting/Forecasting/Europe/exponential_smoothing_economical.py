@@ -3,7 +3,7 @@ from statsmodels.tsa.holtwinters import SimpleExpSmoothing
 from dslabs_functions import series_train_test_split, HEIGHT, FORECAST_MEASURES, DELTA_IMPROVE, plot_line_chart, plot_forecasting_series,plot_forecasting_eval
 from matplotlib.pyplot import savefig
 
-filename: str = "Data/Time_Series/forecast_gdp_europe.csv"
+filename: str = "Data/Time_Series/forecast_gdp_europe_no_nan_second_diff.csv"
 file_tag: str = "forecast_gdp_europe"
 target: str = "GDP"
 timecol: str = "Year"
@@ -49,14 +49,14 @@ def exponential_smoothing_study(train: Series, test: Series, measure: str = "R2"
     return best_model, best_params
 
 best_model, best_params = exponential_smoothing_study(train, test, measure=measure)
-savefig(f"Forecasting/Images/Exponential_Smoothing/{file_tag}_exponential_smoothing_{measure}_study.png")
+savefig(f"Forecasting/Images/Exponential_Smoothing/{file_tag}_exponential_smoothing_{measure}_study_second_diff.png")
 
 params = best_params["params"]
 prd_trn = best_model.predict(start=0, end=len(train) - 1)
 prd_tst = best_model.forecast(steps=len(test))
 
 plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Exponential Smoothing alpha={params[0]}")
-savefig(f"Forecasting/Images/Exponential_Smoothing/{file_tag}_exponential_smoothing_{measure}_eval.png")
+savefig(f"Forecasting/Images/Exponential_Smoothing/{file_tag}_exponential_smoothing_{measure}_eval_second_diff.png")
 
 plot_forecasting_series(
     train,
@@ -66,4 +66,4 @@ plot_forecasting_series(
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Forecasting/Images/Exponential_Smoothing/{file_tag}_exponential_smoothing_{measure}_forecast.png")
+savefig(f"Forecasting/Images/Exponential_Smoothing/{file_tag}_exponential_smoothing_{measure}_forecast_second_diff.png")

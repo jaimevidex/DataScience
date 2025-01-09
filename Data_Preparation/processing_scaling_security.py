@@ -6,32 +6,35 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from matplotlib.pyplot import savefig, subplots, show
 
 file_tag = "class_ny_arrests"
-filename = f"Data/{file_tag}_replacing_outliers.csv"
+filename = f"Data/test_{file_tag}_replacing_outliers.csv"
+filename_train = f"Data/train_{file_tag}_replacing_outliers.csv"
 data: DataFrame = read_csv(filename, na_values="", index_col=None)
+data_train: DataFrame = read_csv(filename_train, na_values="", index_col=None)
 print(f"Original data: {data.shape}")
 target = "CLASS"
 vars: list[str] = data.columns.to_list()
 target_data: Series = data.pop(target)
+data_train.pop(target)
 
-transf: StandardScaler = StandardScaler(with_mean=True, with_std=True, copy=True).fit(data)
+transf: StandardScaler = StandardScaler(with_mean=True, with_std=True, copy=True).fit(data_train)
 df_zscore = DataFrame(transf.transform(data), columns=data.columns, index=data.index)
 df_zscore[target] = target_data
-df_zscore.to_csv(f"Data/{file_tag}_scaled_zscore.csv", index=None)
+df_zscore.to_csv(f"Data/test_{file_tag}_scaled_zscore.csv", index=None)
 """
 MinMax Scaler for the NY Arrests dataset
 """
-transf: MinMaxScaler = MinMaxScaler(feature_range=(0, 1), copy=True).fit(data)
+transf: MinMaxScaler = MinMaxScaler(feature_range=(0, 1), copy=True).fit(data_train)
 df_minmax = DataFrame(transf.transform(data), columns=data.columns, index=data.index)
 df_minmax[target] = target_data
-df_minmax.to_csv(f"Data/{file_tag}_scaled_minmax.csv", index=None)
+df_minmax.to_csv(f"Data/test_{file_tag}_scaled_minmax.csv", index=None)
 
 """
 Results
 """
 file_tag = "class_ny_arrests"
-filename = f"Data/{file_tag}_scaled_minmax.csv"
+filename = f"Data/test_{file_tag}_scaled_minmax.csv"
 df_minmax: DataFrame = read_csv(filename, na_values="", index_col=None)
-filename = f"Data/{file_tag}_scaled_zscore.csv"
+filename = f"Data/test_{file_tag}_scaled_zscore.csv"
 df_zscore: DataFrame = read_csv(filename, na_values="", index_col=None)
 
 fig, axs = subplots(1, 3, figsize=(20, 10), squeeze=False)

@@ -57,12 +57,12 @@ def naive_Bayes_study(
 
 figure()
 best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, eval_metric)
-#savefig(f"Classification/Images/{file_tag}_nb_{eval_metric}_study.png")
+savefig(f"Classification/Images/NB/{file_tag}_nb_{eval_metric}_study.png")
 """show()"""
 
 figure()
 best_model, params = naive_Bayes_study(trnX, trnY, tstX, tstY, "recall")
-#savefig(f"Classification/Images/{file_tag}_nb_recall_study.png")
+savefig(f"Classification/Images/NB/{file_tag}_nb_recall_study.png")
 """show()"""
 
 figure()

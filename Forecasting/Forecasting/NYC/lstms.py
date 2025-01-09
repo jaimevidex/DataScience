@@ -234,8 +234,8 @@ from dslabs_functions import plot_forecasting_eval
 
 params = best_params["params"]
 best_length = params[0]
-trnX, trnY = prepare_dataset_for_lstm(train, seq_length=best_length)
-tstX, tstY = prepare_dataset_for_lstm(test, seq_length=best_length)
+trnX, trnY = prepare_dataset_for_lstm(target_train, seq_length=best_length)
+tstX, tstY = prepare_dataset_for_lstm(target_test, seq_length=best_length)
 
 prd_trn = best_model.predict(trnX)
 prd_tst = best_model.predict(tstX)

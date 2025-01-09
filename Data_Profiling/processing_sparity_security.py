@@ -6,7 +6,7 @@ from dslabs_functions import HEIGHT, plot_multi_scatters_chart, plot_scatter_cha
 from seaborn import heatmap
 from dslabs_functions import get_variable_types
 
-filename = "./Data/class_ny_arrests.csv"
+filename = "./Data/Previous/class_ny_arrests.csv"
 file_tag = "class_ny_arrests"
 data: DataFrame = read_csv(filename, na_values="", index_col=None)
 data = data.dropna()
@@ -35,7 +35,7 @@ else:
 
 
 
-"""
+
 # Sparsity per class individual
 if [] != vars:
     target = "CLASS"
@@ -53,6 +53,7 @@ if [] != vars:
     else:
         print("Sparsity per class: there are no variables.")
 """
+
 # Sparsity per class all
 if [] != vars:
     target = "CLASS"
@@ -86,5 +87,4 @@ heatmap(
     vmax=1,
 )
 savefig(f"Data_Profiling/Images/{file_tag}_correlation_analysis.png")
-show()
-"""
+#show()

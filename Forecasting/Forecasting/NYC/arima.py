@@ -3,17 +3,23 @@ from statsmodels.tsa.arima.model import ARIMA
 from dslabs_functions import series_train_test_split, HEIGHT
 from matplotlib.pyplot import savefig
 
+train_filename: str = "Data/train_forecast_ny_arrests_differentiated.csv"
+test_filename: str = "Data/test_forecast_ny_arrests_differentiated.csv"
 filename: str = "Data/forecast_ny_arrests.csv"
 file_tag: str = "NYC"
 target: str = "Manhattan"
 timecol: str = "Date"
 measure: str = "R2"
 
-data: DataFrame = read_csv(filename, index_col=timecol, sep=";", decimal=".", parse_dates=True)
-series: Series = data[target]
-train, test = series_train_test_split(data, trn_pct=0.90)
+train_data: DataFrame = read_csv(train_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+test_data: DataFrame = read_csv(test_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
 
-predictor = ARIMA(train, order=(3, 1, 2))
+train: Series = train_data
+test: Series = test_data
+
+target_train: Series = train_data[target]
+
+predictor = ARIMA(target_train, exog=train, order=(1, 0, 1))
 model = predictor.fit()
 print(model.summary())
 
@@ -24,7 +30,7 @@ from matplotlib.pyplot import figure, savefig, subplots
 from dslabs_functions import FORECAST_MEASURES, DELTA_IMPROVE, plot_multiline_chart
 
 
-def arima_study(train: Series, test: Series, measure: str = "R2"):
+def arima_study(target_train: Series, train: Series, test: Series, measure: str = "R2"):
     d_values = (0, 1, 2)
     p_params = (1, 2, 3, 5, 7, 10)
     q_params = (1, 3, 5, 7)
@@ -41,11 +47,11 @@ def arima_study(train: Series, test: Series, measure: str = "R2"):
         for q in q_params:
             yvalues = []
             for p in p_params:
-                arima = ARIMA(train, order=(p, d, q))
+                arima = ARIMA(target_train,exog=train, order=(p, d, q))
                 model = arima.fit()
-                prd_tst = model.forecast(steps=len(test), signal_only=False)
-                eval: float = FORECAST_MEASURES[measure](test, prd_tst)
-                # print(f"ARIMA ({p}, {d}, {q})", eval)
+                prd_tst = model.forecast(exog=test ,steps=len(test), signal_only=False)
+                eval: float = FORECAST_MEASURES[measure](test[target], prd_tst)
+                #print(f"ARIMA ({p}, {d}, {q})", eval)
                 if eval > best_performance and abs(eval - best_performance) > DELTA_IMPROVE:
                     best_performance: float = eval
                     best_params["params"] = (p, d, q)
@@ -63,17 +69,17 @@ def arima_study(train: Series, test: Series, measure: str = "R2"):
 
 from matplotlib.pyplot import savefig
 
-best_model, best_params = arima_study(train, test, measure=measure)
+best_model, best_params = arima_study(target_train, train, test, measure=measure)
 savefig(f"Forecasting/Images/ARIMA/{file_tag}_arima_{measure}_study.png")
 
 from dslabs_functions import plot_forecasting_eval
 
 params = best_params["params"]
 prd_trn = best_model.predict(start=0, end=len(train) - 1)
-prd_tst = best_model.forecast(steps=len(test))
+prd_tst = best_model.forecast(steps=len(test), exog=test)
 
 plot_forecasting_eval(
-    train, test, prd_trn, prd_tst, title=f"{file_tag} - ARIMA (p={params[0]}, d={params[1]}, q={params[2]})"
+    train[target], test[target], prd_trn, prd_tst, title=f"{file_tag} - ARIMA (p={params[0]}, d={params[1]}, q={params[2]})"
 )
 savefig(f"Forecasting/Images/ARIMA/{file_tag}_arima_{measure}_eval.png")
 

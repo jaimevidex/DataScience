@@ -21,15 +21,18 @@ class PersistenceOptimistRegressor(RegressorMixin):
         prd_series.index = X.index
         return prd_series
     
+train_filename: str = "Data/train_forecast_ny_arrests_differentiated.csv"
+test_filename: str = "Data/test_forecast_ny_arrests_differentiated.csv"
 filename: str = "Data/forecast_ny_arrests.csv"
 file_tag: str = "NYC"
 target: str = "Manhattan"
 timecol: str = "Date"
 
-data: DataFrame = read_csv(filename, index_col=timecol, sep=";", decimal=".", parse_dates=True)
-series: Series = data[target]
+train_data: DataFrame = read_csv(train_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+test_data: DataFrame = read_csv(test_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
 
-train, test = series_train_test_split(data, trn_pct=0.90)
+train: Series = train_data[target]
+test: Series = test_data[target]
 
 fr_mod = PersistenceOptimistRegressor()
 fr_mod.fit(train)

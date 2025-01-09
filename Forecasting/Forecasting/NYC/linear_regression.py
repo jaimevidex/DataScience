@@ -4,18 +4,20 @@ from matplotlib.pyplot import savefig
 from sklearn.linear_model import LinearRegression
 from dslabs_functions import series_train_test_split, plot_forecasting_eval
 
-filename: str = "Data/forecast_ny_arrests.csv"
+train_filename: str = "Data/train_forecast_ny_arrests_differentiated.csv"
+test_filename: str = "Data/test_forecast_ny_arrests_differentiated.csv"
 file_tag: str = "NYC"
 target: str = "Manhattan"
 timecol: str = "Date"
 
-data: DataFrame = read_csv(filename, index_col=timecol, sep=";", decimal=".", parse_dates=True)
-series: Series = data[target]
-train, test = series_train_test_split(data, trn_pct=0.90)
+train_data: DataFrame = read_csv(train_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+test_data: DataFrame = read_csv(test_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+train: Series = train_data[target]
+test: Series = test_data[target]
 
 trnX = arange(len(train)).reshape(-1, 1)
 trnY = train.to_numpy()
-tstX = arange(len(train), len(data)).reshape(-1, 1)
+tstX = arange(len(train), len(train) + len(test)).reshape(-1, 1)
 tstY = test.to_numpy()
 
 model = LinearRegression()

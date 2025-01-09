@@ -3,15 +3,19 @@ from statsmodels.tsa.holtwinters import SimpleExpSmoothing
 from dslabs_functions import series_train_test_split, HEIGHT, FORECAST_MEASURES, DELTA_IMPROVE, plot_line_chart, plot_forecasting_series,plot_forecasting_eval
 from matplotlib.pyplot import savefig
 
+train_filename: str = "Data/train_forecast_ny_arrests_differentiated.csv"
+test_filename: str = "Data/test_forecast_ny_arrests_differentiated.csv"
 filename: str = "Data/forecast_ny_arrests.csv"
 file_tag: str = "NYC"
 target: str = "Manhattan"
 timecol: str = "Date"
-measure: str = "MAPE"
+measure: str = "R2"
 
-data: DataFrame = read_csv(filename, index_col=timecol, sep=";", decimal=".", parse_dates=True)
-series: Series = data[target]
-train, test = series_train_test_split(data, trn_pct=0.90)
+train_data: DataFrame = read_csv(train_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+test_data: DataFrame = read_csv(test_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+
+train: Series = train_data[target]
+test: Series = test_data[target]
 
 
 

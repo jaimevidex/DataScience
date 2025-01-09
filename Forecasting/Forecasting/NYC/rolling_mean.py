@@ -1,7 +1,10 @@
 from numpy import mean
 from pandas import Series
 from sklearn.base import RegressorMixin
-
+from dslabs_functions import FORECAST_MEASURES, DELTA_IMPROVE, plot_line_chart
+from pandas import read_csv, DataFrame
+from matplotlib.pyplot import figure, savefig
+from dslabs_functions import series_train_test_split, plot_forecasting_eval, plot_forecasting_series, HEIGHT
 
 class RollingMeanRegressor(RegressorMixin):
     def __init__(self, win: int = 3):
@@ -16,15 +19,17 @@ class RollingMeanRegressor(RegressorMixin):
 
     def predict(self, X: Series):
         estimations = self.memory.tolist()
-        for i in range(len(X)):
-            new_value = mean(estimations[len(estimations) - self.win_size - i :])
+        predictions = []
+
+        for _ in range(len(X)):
+            new_value = mean(estimations[-self.win_size:])
             estimations.append(new_value)
-        prd_series: Series = Series(estimations[self.win_size :])
-        prd_series.index = X.index
+            predictions.append(new_value)
+
+        # Create a Series with the correct index
+        prd_series = Series(predictions, index=X.index)
         return prd_series
     
-from dslabs_functions import FORECAST_MEASURES, DELTA_IMPROVE, plot_line_chart
-
 
 def rolling_mean_study(train: Series, test: Series, measure: str = "R2"):
     # win_size = (3, 5, 10, 15, 20, 25, 30, 40, 50)
@@ -59,16 +64,19 @@ from pandas import read_csv, DataFrame
 from matplotlib.pyplot import figure, savefig
 from dslabs_functions import series_train_test_split, plot_forecasting_eval, plot_forecasting_series, HEIGHT
 
+train_filename: str = "Data/train_forecast_ny_arrests_differentiated.csv"
+test_filename: str = "Data/test_forecast_ny_arrests_differentiated.csv"
 filename: str = "Data/forecast_ny_arrests.csv"
 file_tag: str = "NYC"
 target: str = "Manhattan"
 timecol: str = "Date"
 measure: str = "R2"
 
-data: DataFrame = read_csv(filename, index_col=timecol, sep=";", decimal=".", parse_dates=True)
-series: Series = data[target]
+train_data: DataFrame = read_csv(train_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+test_data: DataFrame = read_csv(test_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
 
-train, test = series_train_test_split(data, trn_pct=0.90)
+train: Series = train_data[target]
+test: Series = test_data[target]
 
 fig = figure(figsize=(HEIGHT, HEIGHT))
 best_model, best_params = rolling_mean_study(train, test)

@@ -1,6 +1,6 @@
 from pandas import read_csv, DataFrame, Series, Index, Period
 from matplotlib.pyplot import figure, show, savefig
-from dslabs_functions import plot_line_chart, HEIGHT
+from dslabs_functions import plot_line_chart, HEIGHT, mvi_by_filling
 from matplotlib.pyplot import subplots
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
@@ -8,7 +8,15 @@ from matplotlib.figure import Figure
 file_tag = "NYC"
 target = "Manhattan"
 data: DataFrame = read_csv(
-    "Data/forecast_ny_arrests_scaled.csv",
+    "Data/train_forecasting_ny_arrests.csv",
+    index_col="Date",
+    sep=",",
+    decimal=".",
+    parse_dates=True,
+    infer_datetime_format=True,
+)
+data2: DataFrame = read_csv(
+    "Data/test_forecasting_ny_arrests.csv",
     index_col="Date",
     sep=",",
     decimal=".",
@@ -30,7 +38,7 @@ plot_line_chart(
 )
 savefig(f"Forecasting/Images/Smoothing/{file_tag}_aftersmoothing.png")
 
-sizes: list[int] = [30, 91, 183, 365]
+sizes: list[int] = [30, 91, 183, 365] # monthly, quarterly, semi-annual, and annual
 fig: Figure
 axs: list[Axes]
 fig, axs = subplots(len(sizes), 1, figsize=(3 * HEIGHT, HEIGHT / 2 * len(sizes)))
@@ -48,10 +56,12 @@ for i in range(len(sizes)):
     )
 savefig(f"Forecasting/Images/Smoothing/{file_tag}_smoothingvarioussizes.png")
 
-data = data.rolling(91).mean()
-df : DataFrame = data
 
+
+smoothedData = data.rolling(91).mean()
+df : DataFrame = smoothedData
+
+mvi_by_filling(df, "knn")
 df.dropna(inplace=True)
 
-#save series to csv
-df.to_csv("Data/forecast_ny_arrests_smoothed.csv")
+df.to_csv("Data/train_forecast_ny_arrests_smoothed.csv")

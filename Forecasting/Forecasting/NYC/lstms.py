@@ -16,10 +16,14 @@ def prepare_dataset_for_lstm(series, seq_length: int = 4):
 
 
 class DS_LSTM(Module):
-    def __init__(self, train, input_size: int = 1, hidden_size: int = 50, num_layers: int = 1, length: int = 4):
+    def __init__(self, train, input_size: int = 5, hidden_size: int = 50, num_layers: int = 1, length: int = 4):
         super().__init__()
         self.lstm = LSTM(input_size=input_size, hidden_size=hidden_size, num_layers=num_layers, batch_first=True)
-        self.linear = Linear(hidden_size, 1)
+        
+        # Dynamically determine the output size
+        num_columns = train.shape[1] if len(train.shape) > 1 else 1
+        self.linear = Linear(hidden_size, num_columns)
+        
         self.optimizer = Adam(self.parameters())
         self.loss_fn = MSELoss()
 
@@ -44,27 +48,30 @@ class DS_LSTM(Module):
     def predict(self, X):
         with no_grad():
             y_pred = self(X)
-        return y_pred[:, -1, :]
+        return y_pred[:,-1,:]  # Return predictions for all time steps
+
     
 
 from pandas import read_csv, DataFrame, Series
 from dslabs_functions import series_train_test_split
 
+train_filename: str = "Data/train_forecast_ny_arrests_differentiated.csv"
+test_filename: str = "Data/test_forecast_ny_arrests_differentiated.csv"
 filename: str = "Data/forecast_ny_arrests.csv"
 file_tag: str = "NYC"
 target: str = "Manhattan"
 timecol: str = "Date"
-
 measure: str = "R2"
 
-data: DataFrame = read_csv(filename, index_col=timecol, sep=";", decimal=".", parse_dates=True)
-series = data[[target]].values.astype("float32")
+train_data: DataFrame = read_csv(train_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+test_data: DataFrame = read_csv(test_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
 
-train_size = int(len(series) * 0.90)
-train, test = series[:train_size], series[train_size:]
+train: Series = train_data.values.astype("float32")
+test: Series = test_data.values.astype("float32")
 
-model = DS_LSTM(train, input_size=1, hidden_size=50, num_layers=1)
+model = DS_LSTM(train, input_size=5, hidden_size=50, num_layers=1)
 loss = model.fit()
+
 print(loss)
 
 from dslabs_functions import HEIGHT, plot_multiline_chart
@@ -94,7 +101,7 @@ def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
         values = {}
         for hidden in nr_hidden_units:
             yvalues = []
-            model = DS_LSTM(train, hidden_size=hidden)
+            model = DS_LSTM(input_size=5, train=train, hidden_size=hidden)
             for n in range(0, nr_episodes + 1):
                 model.fit()
                 if n % step == 0:
@@ -144,10 +151,13 @@ plot_forecasting_eval(
 )
 savefig(f"Forecasting/Images/LSTMs/{file_tag}_lstms_{measure}_eval.png")
 
+
 from dslabs_functions import plot_forecasting_series
 
-series = data[[target]]
-train, test = series[:train_size], series[train_size:]
+train: Series = train_data
+test: Series = test_data
+
+
 pred_series: Series = Series(prd_tst.numpy().ravel(), index=test.index[best_length:])
 
 plot_forecasting_series(

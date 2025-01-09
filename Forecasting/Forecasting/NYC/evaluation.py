@@ -68,31 +68,33 @@ class SimpleAvgRegressor(RegressorMixin):
         prd_series.index = X.index
         return prd_series
     
-
-filename: str = "Data/forecast_ny_arrests.csv"
+version: str = "diff1"
+original_file: str = f"Data/forecast_ny_arrests.csv"
+train_filename: str = f"Data/train_forecast_ny_arrests_differentiated.csv"
+test_filename: str = f"Data/test_forecast_ny_arrests_differentiated.csv"
 file_tag: str = "forecasting_ny_arrests"
 target: str = "Manhattan"
 timecol: str = "Date"
 
-data: DataFrame = read_csv(filename, index_col=timecol, sep=";", decimal=".", parse_dates=True)
-series: Series = data[target]
-
-train, test = series_train_test_split(series, trn_pct=0.90)
+train_data: DataFrame = read_csv(train_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+test_data: DataFrame = read_csv(test_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+train_series: Series = train_data[target]
+test_series: Series = test_data[target]
 
 fr_mod = SimpleAvgRegressor()
-fr_mod.fit(train)
-prd_trn: Series = fr_mod.predict(train)
-prd_tst: Series = fr_mod.predict(test)
+fr_mod.fit(train_series)
+prd_trn: Series = fr_mod.predict(train_series)
+prd_tst: Series = fr_mod.predict(test_series)
 
-plot_forecasting_eval(train, test, prd_trn, prd_tst, title=f"{file_tag} - Simple Average")
-savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_eval.png")
+plot_forecasting_eval(train_series, test_series, prd_trn, prd_tst, title=f"{file_tag} - Simple Average")
+savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_eval{version}.png")
 
 plot_forecasting_series(
-    train,
-    test,
+    train_series,
+    test_series,
     prd_tst,
     title=f"{file_tag} - Simple Average",
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_forecast.png")
+savefig(f"Forecasting/Images/Evaluation/{file_tag}_simpleAvg_forecast{version}.png")

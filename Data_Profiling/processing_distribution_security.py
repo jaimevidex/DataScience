@@ -12,7 +12,7 @@ from dslabs_functions import define_grid, HEIGHT, plot_multibar_chart, set_chart
 import matplotlib.pyplot as plt
 
 # Load the data and print the number of variables and records
-filename = "./Data/class_ny_arrests.csv"
+filename = "./Data/Previous/class_ny_arrests.csv"
 file_tag = "class_ny_arrests"
 data: DataFrame = read_csv(filename, na_values="", index_col=None)
 
@@ -29,7 +29,7 @@ if [] != numeric:
     #plt.show()
 else:
     print("There are no numeric variables.")
-
+"""
 # Boxplot for each numeric variable
 print("Boxplots")
 if [] != numeric:
@@ -50,8 +50,8 @@ if [] != numeric:
     #show()
 else:
     print("There are no numeric variables.")
-
-
+"""
+"""
 IQR_FACTOR: float = [1.5,1.5,2.0,1.5,0.0,3.7,8.5,8.5,3.6]
 NR_STDEV: int = [3,2,3,2,2,5,8,8,5]
 
@@ -122,7 +122,7 @@ if [] != numeric:
 else:
     print("There are no numeric variables.")
 
-"""
+
 # Show the box plots without outliers
 print("Boxplots without outliers")
 if [] != numeric:
@@ -145,7 +145,7 @@ if [] != numeric:
     #show()
 else:
     print("There are no numeric variables.")
-"""
+
 # Histogram for each numeric variable
 print("Histograms")
 if [] != numeric:
@@ -243,7 +243,7 @@ if [] != symbolic:
     #show()
 else:
     print("There are no symbolic variables.")
-
+"""
     
 target = "CLASS"
 print(data[target].value_counts())

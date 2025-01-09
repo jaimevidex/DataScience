@@ -9,7 +9,7 @@ import pandas as pd
 
 target = "CLASS"
 file_tag = "class_ny_arrests"
-train_filename = "Data/train_class_ny_arrests_scaled_zscore.csv"
+train_filename = "Data/class_ny_arrests_smote.csv"
 test_filename = "Data/test_class_ny_arrests_scaled_zscore.csv"
 eval_metric = "accuracy"
 

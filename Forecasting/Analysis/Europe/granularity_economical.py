@@ -9,7 +9,7 @@ from matplotlib.figure import Figure
 file_tag = "forecast_gdp_europe"
 target = "GDP"
 data: DataFrame = read_csv(
-    "Data/Time_Series/forecast_gdp_europe.csv",
+    "Data/Time_Series/forecast_gdp_europe_no_nan.csv",
     index_col="Year",
     sep=",",
     decimal=".",
@@ -52,7 +52,7 @@ plot_line_chart(
     title=f"{file_tag} yearly mean {target}",
 )
 #show()
-savefig(f"Forecasting/Images/{file_tag}_univariate_aggregation_study.png")
+savefig(f"Forecasting/Images/Granularity/{file_tag}_univariate_aggregation_study.png")
 
 study_tag = "granularity"
 grans: list[str] = ["Y"]
@@ -75,4 +75,4 @@ for i in range(len(grans)):
         #title=f"granularity={grans[i]}",
     )
 #show()
-savefig(f"Forecasting/Images/{file_tag}_{study_tag}_study.png")
+savefig(f"Forecasting/Images/Granularity/{file_tag}_{study_tag}_study.png")

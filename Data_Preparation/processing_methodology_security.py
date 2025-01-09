@@ -65,13 +65,13 @@ def evaluate_approach(
 #    show()
 filename = "Data/class_ny_arrests.csv"
 file_tag = "class_ny_arrests"
-train: DataFrame = read_csv(f"Data/{file_tag}_train_{method_tag}.csv")
-test: DataFrame = read_csv(f"Data/{file_tag}_test_{method_tag}.csv")
+train: DataFrame = read_csv(f"Data/{file_tag}_under.csv")
+test: DataFrame = read_csv(f"Data/test_{file_tag}_scaled_zscore.csv")
 
 figure()
 eval: dict[str, list] = evaluate_approach(train, test, target="CLASS", metric="recall")
 plot_multibar_chart(
     ["NB", "KNN"], eval, title=f"{file_tag} evaluation", percentage=True
 )
-savefig(f"./{file_tag}_eval_feature_engineering.png")
+savefig(f"./{file_tag}_eval_under.png")
 show()

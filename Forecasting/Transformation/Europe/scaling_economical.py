@@ -12,9 +12,15 @@ def scale_all_dataframe(data: DataFrame) -> DataFrame:
     df.to_csv(file_name, index=True)
     return df
 
+def series_train_test_split(data: Series, trn_pct: float = 0.90) -> tuple[Series, Series]:
+    trn_size: int = int(len(data) * trn_pct)
+    df_cp: Series = data.copy()
+    train: Series = df_cp.iloc[:trn_size]
+    test: Series = df_cp.iloc[trn_size:]
+    return train, test
 
 file_tag = "forecast_gdp_europe"
-filename = "Data/Time_Series/forecast_gdp_europe.csv"
+filename = "Data/Time_Series/forecast_gdp_europe_no_nan.csv"
 index = "Year"
 target = "GDP"
 data: DataFrame = read_csv(
@@ -26,6 +32,8 @@ data: DataFrame = read_csv(
     infer_datetime_format=True,
 )
 series: Series = data[target]
+
+
 
 figure(figsize=(3 * HEIGHT, HEIGHT / 2))
 plot_line_chart(
@@ -50,6 +58,9 @@ plot_line_chart(
     ylabel=target,
     title=f"{file_tag} {target} after scaling",
 )
+train, test = series_train_test_split(ss, trn_pct=0.90)
+test.to_csv("Data/Time_Series/forecast_gdp_europe_scaling_test.csv", index=True)
+train.to_csv("Data/Time_Series/forecast_gdp_europe_scaling_train.csv", index=True)
 #show()
 study_tag = "Scaling2"
 savefig(f"Forecasting/Images/Scaling/{file_tag}_{study_tag}_study.png")

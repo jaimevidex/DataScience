@@ -57,7 +57,7 @@ class DS_LSTM(Module):
             y_pred = self(X)
         return y_pred[:, -1, :]
     
-filename: str = "Data/Time_Series/forecast_gdp_europe.csv"
+filename: str = "Data/Time_Series/forecast_gdp_europe_no_nan_second_diff.csv"
 file_tag: str = "forecast_gdp_europe"
 target: str = "GDP"
 timecol: str = "Year"
@@ -129,7 +129,7 @@ def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
 
 
 best_model, best_params = lstm_study(train, test, nr_episodes=3000, measure=measure)
-savefig("Forecasting/Images/LSTM/all_plot_diagnostics.png")
+savefig("Forecasting/Images/LSTM/all_plot_diagnostics_second_diff.png")
 
 params = best_params["params"]
 best_length = params[0]
@@ -146,7 +146,7 @@ plot_forecasting_eval(
     prd_tst,
     title=f"{file_tag} - LSTM (length={best_length}, hidden={params[1]}, epochs={params[2]})",
 )
-savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_eval.png")
+savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_eval_second_diff.png")
 
 series = data[[target]]
 train, test = series[:train_size], series[train_size:]
@@ -160,4 +160,4 @@ plot_forecasting_series(
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_forecast.png")
+savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_forecast_second_diff.png")

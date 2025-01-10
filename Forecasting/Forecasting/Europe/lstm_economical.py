@@ -22,9 +22,9 @@ def prepare_dataset_for_lstm(series, seq_length: int = 4):
         setX.append(past)
         setY.append(future)
     
-    setX_tensor = tensor(setX, dtype=torch.float32).view(-1, seq_length, 1)  # Shape: (batch_size, seq_len, input_size)
-    setY_tensor = tensor(setY, dtype=torch.float32).view(-1, seq_length, 1)  # Shape: (batch_size, seq_len, input_size)
-    return setX_tensor, setY_tensor
+    setX_tensor = tensor(setX, dtype=torch.float32).view(-1, seq_length, 1)
+    setY_tensor = tensor(setY, dtype=torch.float32).view(-1, seq_length, 1)
+    return setX_tensor , setY_tensor
 
 class DS_LSTM(Module):
     def __init__(self, train, input_size: int = 1, hidden_size: int = 50, num_layers: int = 1, length: int = 4):
@@ -57,18 +57,22 @@ class DS_LSTM(Module):
             y_pred = self(X)
         return y_pred[:, -1, :]
     
-filename: str = "Data/Time_Series/forecast_gdp_europe_no_nan_second_diff.csv"
+
+train_filename = "Data/Time_Series/forecast_gdp_europe_no_nan_first_diff_train.csv"
+test_filename = "Data/Time_Series/forecast_gdp_europe_no_nan_first_diff_test.csv"
 file_tag: str = "forecast_gdp_europe"
 target: str = "GDP"
 timecol: str = "Year"
 
 measure: str = "R2"
 
-data: DataFrame = read_csv(filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
-series = data[[target]].values.astype("float32")
+train_file: DataFrame = read_csv(train_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
+test_file: DataFrame = read_csv(test_filename, index_col=timecol, sep=",", decimal=".", parse_dates=True)
 
-train_size = int(len(series) * 0.90)
-train, test = series[:train_size], series[train_size:]
+
+
+train = train_file[[target]].values.astype("float32")
+test = test_file[[target]].values.astype("float32")
 
 model = DS_LSTM(train, input_size=1, hidden_size=50, num_layers=1)
 loss = model.fit()
@@ -129,7 +133,7 @@ def lstm_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
 
 
 best_model, best_params = lstm_study(train, test, nr_episodes=3000, measure=measure)
-savefig("Forecasting/Images/LSTM/all_plot_diagnostics_second_diff.png")
+savefig("Forecasting/Images/LSTM/all_plot_diagnostics_first_diff.png")
 
 params = best_params["params"]
 best_length = params[0]
@@ -146,18 +150,121 @@ plot_forecasting_eval(
     prd_tst,
     title=f"{file_tag} - LSTM (length={best_length}, hidden={params[1]}, epochs={params[2]})",
 )
-savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_eval_second_diff.png")
+savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_eval_first_diff.png")
 
-series = data[[target]]
-train, test = series[:train_size], series[train_size:]
-pred_series: Series = Series(prd_tst.numpy().ravel(), index=test.index[best_length:])
+pred_series: Series = Series(prd_tst.numpy().ravel(), index=test_file.index[best_length:])
+
 
 plot_forecasting_series(
-    train[best_length:],
-    test[best_length:],
+    Series(train[best_length:].ravel(), index=train_file.index[best_length:]),
+    Series(test[best_length:].ravel(), index=test_file.index[best_length:]),
     pred_series,
     title=f"{file_tag} - LSTMs ",
     xlabel=timecol,
     ylabel=target,
 )
-savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_forecast_second_diff.png")
+
+savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_forecast_first_diff.png")
+
+
+'''
+train: Series = train_file.values.astype("float32")
+test: Series = test_file.values.astype("float32")
+
+target_train = train_file[[target]].values.astype("float32")
+target_test = test_file[[target]].values.astype("float32")
+
+model = DS_LSTM(train, input_size=11, hidden_size=50, num_layers=1)
+loss = model.fit()
+print(loss)
+
+
+def lstm_multi_study(train, test, nr_episodes: int = 1000, measure: str = "R2"):
+    sequence_size = [2, 4, 8]
+    nr_hidden_units = [25, 50, 100]
+
+    step: int = nr_episodes // 10
+    episodes = [1] + list(range(0, nr_episodes + 1, step))[1:]
+    flag = measure == "R2" or measure == "MAPE"
+    best_model = None
+    best_params: dict = {"name": "LSTM", "metric": measure, "params": ()}
+    best_performance: float = -100000
+
+    _, axs = subplots(1, len(sequence_size), figsize=(len(sequence_size) * HEIGHT, HEIGHT))
+
+    for i in range(len(sequence_size)):
+        length = sequence_size[i]
+        if len(test) > length: 
+            tstX, tstY = prepare_dataset_for_lstm(test, seq_length=length)
+
+            values = {}
+            for hidden in nr_hidden_units:
+                yvalues = []
+                model = DS_LSTM(train,input_size=11, hidden_size=hidden)
+                for n in range(0, nr_episodes + 1):
+                    model.fit()
+                    if n % step == 0:
+                        prd_tst = model.predict(tstX)
+                        eval: float = FORECAST_MEASURES[measure](target_test[length:], prd_tst[:, -1])
+                        print(f"seq length={length} hidden_units={hidden} nr_episodes={n}", eval)
+                        if eval > best_performance and abs(eval - best_performance) > DELTA_IMPROVE:
+                            best_performance: float = eval
+                            best_params["params"] = (length, hidden, n)
+                            best_model = deepcopy(model)
+                        yvalues.append(eval)
+                values[hidden] = yvalues
+            plot_multiline_chart(
+                episodes,
+                values,
+                ax=axs[i],
+                title=f"LSTM seq length={length} ({measure})",
+                xlabel="nr episodes",
+                ylabel=measure,
+                percentage=flag,
+            )
+        else:
+            print(f"Warning: Test dataset is too small for sequence length={length}. Skipping this length.")
+            continue
+    print(
+    f"LSTM best results achieved with length={best_params['params'][0]} hidden_units={best_params['params'][1]} and nr_episodes={best_params['params'][2]} ==> measure={best_performance:.2f}"
+)
+
+    return best_model, best_params
+
+
+best_model, best_params = lstm_multi_study(train, test, nr_episodes=3000, measure=measure)
+savefig("Forecasting/Images/LSTM/all_plot_diagnostics_first_diff_multi.png")
+
+params = best_params["params"]
+best_length = params[0]
+trnX, trnY = prepare_dataset_for_lstm(train, seq_length=best_length)
+tstX, tstY = prepare_dataset_for_lstm(test, seq_length=best_length)
+
+prd_trn = best_model.predict(trnX)
+prd_tst = best_model.predict(tstX)
+
+plot_forecasting_eval(
+    target_train[best_length:],
+    target_test[best_length:],
+    prd_trn,
+    prd_tst,
+    title=f"{file_tag} - LSTM (length={best_length}, hidden={params[1]}, epochs={params[2]})",
+)
+savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_eval_first_diff_multi.png")
+
+
+train_series = train_file[[target]]
+test_series = test_file[[target]]
+
+pred_series: Series = Series(prd_tst.numpy().ravel(), index=test_series.index[best_length:])
+
+plot_forecasting_series(
+    train_series[best_length:],
+    test_series[best_length:],
+    pred_series,
+    title=f"{file_tag} - LSTMs ",
+    xlabel=timecol,
+    ylabel=target,
+)
+savefig(f"Forecasting/Images/LSTM/{file_tag}_lstms_{measure}_forecast_first_diff_multi.png")
+'''

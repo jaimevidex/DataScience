@@ -39,8 +39,8 @@ def knn_study(
 
 target = "CLASS"
 file_tag = "class_ny_arrests"
-train_filename = "Data/class_ny_arrests_smote.csv"
-test_filename = "Data/test_class_ny_arrests_scaled_zscore.csv"
+train_filename = "./Data/class_ny_arrests_smote.csv"
+test_filename = "./Data/test_class_ny_arrests_scaled_zscore.csv"
 eval_metric = "accuracy"
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(train_filename, test_filename, target)

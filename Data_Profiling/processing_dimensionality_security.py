@@ -12,7 +12,7 @@ from dslabs_functions import define_grid, HEIGHT, plot_multibar_chart, set_chart
 import matplotlib.pyplot as plt
 
 # Load the data and print the number of variables and records
-filename = "./Data/class_ny_arrests.csv"
+filename = "./Data/Previous/class_ny_arrests.csv"
 file_tag = "class_ny_arrests"
 data: DataFrame = read_csv(filename, na_values="", index_col=None)
 

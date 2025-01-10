@@ -5,7 +5,7 @@ from numpy import ndarray
 from pandas import Series
 from imblearn.over_sampling import SMOTE
 
-filename = "./Data/class_financial_distress_scaled_zscore.csv"
+filename = "./Data/train_class_financial_distress_scaled_zscore.csv"
 file = "class_financial_distress"
 file_tag = "class_financial_distress_class_balance"
 target = "CLASS"

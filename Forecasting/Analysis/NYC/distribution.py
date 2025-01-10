@@ -4,6 +4,8 @@ from matplotlib.pyplot import figure, show, subplots, savefig, setp
 from dslabs_functions import HEIGHT, plot_line_chart, ts_aggregation_by, set_chart_labels, plot_multiline_chart
 from matplotlib.figure import Figure
 from matplotlib.gridspec import GridSpec
+from sklearn.cluster import KMeans
+import numpy as np
 
 image_tag = "distribution"
 file_tag = "class_ny_arrests"
@@ -76,13 +78,13 @@ def get_lagged_series(series: Series, max_lag: int, delta: int = 1):
 
 
 figure(figsize=(3*HEIGHT, HEIGHT))
-lags = get_lagged_series(series, 20, 10)
-plot_multiline_chart(series.index.to_list(), lags, xlabel=index, ylabel=target)
+lags = get_lagged_series(ss_months, 20, 10)
+plot_multiline_chart(ss_months.index.to_list(), lags, xlabel=index, ylabel=target)
 
 savefig(f"Forecasting/Images/Distribution/{image_tag}_{file_tag}_lags_{target}.png")
 
 
-def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
+def autocorrelation_study(series: Series, max_lag: int, delta: int = 1, bin_size: int = 25):
     k: int = int(max_lag / delta)
     fig = figure(figsize=(4 * HEIGHT, 2 * HEIGHT), constrained_layout=True)
     gs = GridSpec(2, k, figure=fig)
@@ -91,9 +93,27 @@ def autocorrelation_study(series: Series, max_lag: int, delta: int = 1):
     for i in range(1, k + 1):
         ax = fig.add_subplot(gs[0, i - 1])
         lag = i * delta
-        ax.scatter(series.shift(lag).tolist(), series_values)
+        shifted_values = series.shift(lag).tolist()
+        
+        # Perform binning
+        data = list(zip(shifted_values, series_values))
+        data = np.array(data)
+        data = data[~np.isnan(data).any(axis=1)]  # Remove rows with NaN values
+        
+        # Bin the data
+        binned_data = []
+        for j in range(0, len(data), bin_size):
+            bin_slice = data[j:j + bin_size]
+            if len(bin_slice) > 0:
+                bin_mean = np.mean(bin_slice, axis=0)
+                binned_data.append(bin_mean)
+        binned_data = np.array(binned_data)
+        
+        # Scatter plot with binned data
+        ax.scatter(binned_data[:, 0], binned_data[:, 1])
         ax.set_xlabel(f"lag {lag}")
         ax.set_ylabel("original")
+        
     ax = fig.add_subplot(gs[1, :])
     ax.acorr(series, maxlags=max_lag)
     ax.set_title("Autocorrelation")

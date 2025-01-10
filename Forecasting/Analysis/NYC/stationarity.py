@@ -3,7 +3,7 @@ from matplotlib.pyplot import subplots, show, gca, figure, show, savefig, plot, 
 from matplotlib.figure import Figure
 from matplotlib.axes import Axes
 from statsmodels.tsa.seasonal import DecomposeResult, seasonal_decompose
-from dslabs_functions import HEIGHT, set_chart_labels, plot_line_chart
+from dslabs_functions import HEIGHT, set_chart_labels, plot_line_chart, ts_aggregation_by
 
 def plot_components(
     series: Series,
@@ -44,11 +44,12 @@ data: DataFrame = read_csv(
     infer_datetime_format=True,
 )
 series: Series = data[target]
+ss_months: Series = ts_aggregation_by(series, gran_level="M", agg_func=sum)
 
 plot_components(
-    series,
-    title=f"{file_tag} hourly {target}",
-    x_label=series.index.name,
+    ss_months,
+    title=f"{file_tag} monthly {target}",
+    x_label=ss_months.index.name,
     y_label=target,
 )
 
@@ -56,15 +57,15 @@ savefig(f"Forecasting/Images/Stationarity/{image_tag}_{file_tag}_components_{tar
 
 figure(figsize=(3 * HEIGHT, HEIGHT))
 plot_line_chart(
-    series.index.to_list(),
-    series.to_list(),
-    xlabel=series.index.name,
+    ss_months.index.to_list(),
+    ss_months.to_list(),
+    xlabel=ss_months.index.name,
     ylabel=target,
     title=f"{file_tag} stationary study",
     name="original",
 )
-n: int = len(series)
-plot(series.index, [series.mean()] * n, "r-", label="mean")
+n: int = len(ss_months)
+plot(ss_months.index, [ss_months.mean()] * n, "r-", label="mean")
 legend()
 
 savefig(f"Forecasting/Images/Stationarity/{image_tag}_{file_tag}_stationary_{target}.png")
@@ -73,23 +74,23 @@ BINS = 10
 mean_line: list[float] = []
 
 for i in range(BINS):
-    segment: Series = series[i * n // BINS : (i + 1) * n // BINS]
+    segment: Series = ss_months[i * n // BINS : (i + 1) * n // BINS]
     mean_value: list[float] = [segment.mean()] * (n // BINS)
     mean_line += mean_value
 mean_line += [mean_line[-1]] * (n - len(mean_line))
 
 figure(figsize=(3 * HEIGHT, HEIGHT))
 plot_line_chart(
-    series.index.to_list(),
-    series.to_list(),
-    xlabel=series.index.name,
+    ss_months.index.to_list(),
+    ss_months.to_list(),
+    xlabel=ss_months.index.name,
     ylabel=target,
     title=f"{file_tag} stationary study",
     name="original",
     show_stdev=True,
 )
-n: int = len(series)
-plot(series.index, mean_line, "r-", label="mean")
+n: int = len(ss_months)
+plot(ss_months.index, mean_line, "r-", label="mean")
 legend()
 
 savefig(f"Forecasting/Images/Stationarity/{image_tag}_{file_tag}_stationary_{target}_mean.png")
@@ -107,4 +108,4 @@ def eval_stationarity(series: Series) -> bool:
     return result[1] <= 0.05
 
 
-print(f"The series {('is' if eval_stationarity(series) else 'is not')} stationary")
+print(f"The series {('is' if eval_stationarity(ss_months) else 'is not')} stationary")

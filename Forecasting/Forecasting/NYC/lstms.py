@@ -101,6 +101,7 @@ def lstm_study_uni(train, test, nr_episodes: int = 1000, measure: str = "R2"):
     for i in range(len(sequence_size)):
         length = sequence_size[i]
         tstX, tstY = prepare_dataset_for_lstm(test, seq_length=length)
+        print(tstX.shape, tstY.shape)
 
         values = {}
         for hidden in nr_hidden_units:

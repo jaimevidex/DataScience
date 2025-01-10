@@ -38,7 +38,7 @@ plot_line_chart(
 )
 savefig(f"Forecasting/Images/Smoothing/{file_tag}_aftersmoothing.png")
 
-sizes: list[int] = [30, 91, 183, 365] # monthly, quarterly, semi-annual, and annual
+sizes: list[int] = [30, 60, 91] # monthly, quarterly, semi-annual, and annual
 fig: Figure
 axs: list[Axes]
 fig, axs = subplots(len(sizes), 1, figsize=(3 * HEIGHT, HEIGHT / 2 * len(sizes)))

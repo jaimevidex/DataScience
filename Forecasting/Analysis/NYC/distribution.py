@@ -35,7 +35,7 @@ savefig(f"Forecasting/Images/Distribution/{image_tag}_{file_tag}_weekly_{target}
 fig: Figure
 axs: array
 fig, axs = subplots(2, 2, figsize=(2 * HEIGHT, HEIGHT))
-set_chart_labels(axs[0, 0], title="HOURLY")
+set_chart_labels(axs[0, 0], title="DAILY")
 axs[0, 0].boxplot(series)
 set_chart_labels(axs[0, 1], title="WEEKLY")
 axs[0, 1].boxplot(ss_weeks)
@@ -48,14 +48,15 @@ axs[1, 1].grid(False)
 axs[1, 1].set_axis_off()
 axs[1, 1].text(0.2, 0, str(ss_weeks.describe()), fontsize="small")
 
-savefig(f"Forecasting/Images/{image_tag}_{file_tag}_boxplot_{target}.png")
+savefig(f"Forecasting/Images/Distribution/{image_tag}_{file_tag}_boxplot_{target}.png")
 
 ss_days: Series = ts_aggregation_by(series, gran_level="D", agg_func=sum)
 ss_months: Series = ts_aggregation_by(series, gran_level="M", agg_func=sum)
 ss_quarters: Series = ts_aggregation_by(series, gran_level="Q", agg_func=sum)
+ss_years: Series = ts_aggregation_by(series, gran_level="Y", agg_func=sum)
 
-grans: list[Series] = [series, ss_days, ss_weeks, ss_months, ss_quarters]
-gran_names: list[str] = ["Horuly", "Daily", "Weekly", "Monthly", "Quarterly"]
+grans: list[Series] = [series, ss_months, ss_quarters, ss_years]
+gran_names: list[str] = ["Daily", "Weekly", "Quarterly", "Annualy"]
 fig: Figure
 axs: array
 fig, axs = subplots(1, len(grans), figsize=(len(grans) * HEIGHT, HEIGHT))

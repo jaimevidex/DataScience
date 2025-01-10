@@ -68,10 +68,10 @@ class SimpleAvgRegressor(RegressorMixin):
         prd_series.index = X.index
         return prd_series
     
-version: str = "diff1"
+version: str = "aggregY"
 original_file: str = f"Data/forecast_ny_arrests.csv"
-train_filename: str = f"Data/train_forecast_ny_arrests_differentiated.csv"
-test_filename: str = f"Data/test_forecast_ny_arrests_differentiated.csv"
+train_filename: str = f"Data/train_forecast_ny_arrests_aggregated.csv"
+test_filename: str = f"Data/test_forecast_ny_arrests_aggregated.csv"
 file_tag: str = "forecasting_ny_arrests"
 target: str = "Manhattan"
 timecol: str = "Date"

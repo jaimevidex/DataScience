@@ -6,7 +6,7 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 
 file_tag = "NYC"
-gran = "Y"
+gran = "M"
 target = "Manhattan"
 data: DataFrame = read_csv(
     "Data/forecast_ny_arrests.csv",
@@ -48,7 +48,7 @@ plot_line_chart(
     ss_days.to_list(),
     xlabel="days",
     ylabel=target,
-    title=f"{file_tag} daily mean {target}",
+    title=f"{file_tag} monthly mean {target}",
 )
 savefig(f"Forecasting/Images/Granularity/{file_tag}_aggregationby{gran}.png")
 

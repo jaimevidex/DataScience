@@ -57,5 +57,5 @@ data_ext: DataFrame = derive_time_granularities(data, time_column, granularity_l
 
 # Generate granularity analysis
 analyse_time_granularity(data_ext, time_column, granularity_levels)
-savefig(f"images/{file_tag}_granularity_{time_column}.png")
+savefig(f"Data_Profiling/Images/Granularity_financial_distress/{file_tag}_granularity_{time_column}.png")
 show()

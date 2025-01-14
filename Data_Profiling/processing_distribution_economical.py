@@ -26,7 +26,7 @@ if [] != numeric:
     figure(figsize=(10, 9))
     data[numeric].boxplot(rot=45)
     ylim(-300000, 350000)  # Set the y-axis limits as needed
-    savefig(f"Images/{file_tag}_global_boxplot.png")
+    savefig(f"Data_Profiling/Images/Distribution_financial_distress/{file_tag}_global_boxplot.png")
     #plt.show()
 else:
     print("There are no numeric variables.")
@@ -47,7 +47,7 @@ if [] != numeric:
         axs[i, j].set_title("Boxplot for %s" % numeric[n])
         axs[i, j].boxplot(data[numeric[n]].dropna().values)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"Images/{file_tag}_single_boxplots.png")
+    savefig(f"Data_Profiling/Images/Distribution_financial_distress/{file_tag}_single_boxplots.png")
     #show()
 else:
     print("There are no numeric variables.")
@@ -151,7 +151,7 @@ if [] != numeric:
         axs[i, j].set_title("Boxplot for %s without outliers" % numeric[n])
         axs[i, j].boxplot(data_no_outliers[numeric[n]].dropna().values)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"Images/{file_tag}_single_boxplots_no_outliers.png")
+    savefig(f"Data_Profiling/Images/Distribution_financial_distress/{file_tag}_single_boxplots_no_outliers.png")
     #show()
 else:
     print("There are no numeric variables.")
@@ -200,7 +200,7 @@ if [] != numeric:
         ylabel="nr outliers",
         percentage=False,
     )
-    savefig(f"Images/{file_tag}_outliers_standard.png")
+    savefig(f"Data_Profiling/Images/Distribution_financial_distress/{file_tag}_outliers_standard.png")
     #show()
 else:
     print("There are no numeric variables.")
@@ -223,7 +223,7 @@ if [] != numeric:
         )
         axs[i, j].hist(data[numeric[n]].dropna().values)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"Images/{file_tag}_single_histograms_numeric.png")
+    savefig(f"Data_Profiling/Images/Distribution_financial_distress/{file_tag}_single_histograms_numeric.png")
     #show()
 else:
     print("There are no numeric variables.")
@@ -269,7 +269,7 @@ if [] != numeric:
     for n in range(len(numeric)):
         histogram_with_distributions(axs[i, j], data[numeric[n]].dropna(), numeric[n])
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"Images/{file_tag}_histogram_numeric_distribution.png")
+    savefig(f"Data_Profiling/Images/Distribution_financial_distress/{file_tag}_histogram_numeric_distribution.png")
     #show()
 else:
     print("There are no numeric variables.")
@@ -296,7 +296,7 @@ if [] != symbolic:
             percentage=False,
         )
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
-    savefig(f"Images/{file_tag}_histograms_symbolic.png")
+    savefig(f"Data_Profiling/Images/Distribution_financial_distress/{file_tag}_histograms_symbolic.png")
     #show()
 else:
     print("There are no symbolic variables.")
@@ -313,4 +313,4 @@ plot_bar_chart(
     values.to_list(),
     title=f"Target distribution (target={target})",
 )
-savefig(f"Images/{file_tag}_class_distribution.png")
+savefig(f"Data_Profiling/Images/Distribution_financial_distress/{file_tag}_class_distribution.png")

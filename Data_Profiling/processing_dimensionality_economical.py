@@ -22,7 +22,7 @@ values: dict[str, int] = {"nr records": data.shape[0], "nr variables": data.shap
 plot_bar_chart(
     list(values.keys()), list(values.values()), title="Nr of records vs nr variables"
 )
-savefig(f"Images/{file_tag}_records_variables.png")
+savefig(f"Data_Profiling/Images/Dimensionality_financial_distress/{file_tag}_records_variables.png")
 #show()
 
 # Missing Values of each variable
@@ -40,7 +40,7 @@ plot_bar_chart(
     xlabel="variables",
     ylabel="nr missing values",
 )
-savefig(f"Images/{file_tag}_mv.png")
+savefig(f"Data_Profiling/Images/Dimensionality_financial_distress/{file_tag}_mv.png")
 #show()
 
 # Show the different Variable Types
@@ -54,5 +54,5 @@ figure(figsize=(4, 2))
 plot_bar_chart(
     list(counts.keys()), list(counts.values()), title="Nr of variables per type"
 )
-savefig(f"Images/{file_tag}_variable_types.png")
+savefig(f"Data_Profiling/Images/Dimensionality_financial_distress/{file_tag}_variable_types.png")
 

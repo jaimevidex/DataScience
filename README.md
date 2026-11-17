@@ -2,7 +2,6 @@
 
 A complete data-science pipeline over two very different datasets, following the **CRISP-DM** lifecycle end to end: profiling, preparation, feature engineering, classification and time-series forecasting.
 
-Built for the *Data Science* course at MEIC-A, Instituto Superior Técnico.
 
 ## The two datasets
 
@@ -46,6 +45,6 @@ Dependencies: `pandas`, `numpy`, `matplotlib`, `scikit-learn`, `imbalanced-learn
 
 ## Notes
 
-- CSVs are not committed — the course datasets are large and distributed separately.
+- CSVs are not committed — the source datasets are large and distributed separately.
 - The `Images/` folders are committed on purpose: they are the evidence behind each decision in the report.
 - `aExportImages/` regenerates the figures used in the LaTeX document.

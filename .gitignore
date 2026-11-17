@@ -1,4 +1,6 @@
-Data/
+# keep the repo light: course datasets are distributed separately
+*.csv
+!ds_latex/images/
 __pycache__/
+*.pyc
 .DS_Store
-/aExportImages
